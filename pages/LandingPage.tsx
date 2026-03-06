@@ -67,7 +67,8 @@ const DemoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen,
       >
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-background/50 border hover:bg-accent transition-colors z-10"
+          className="absolute top-4 right-4 p-2 rounded-full bg-background/50 border hover:bg-accent transition-colors z-10 text-foreground"
+          aria-label="Close demo"
         >
           <X size={20} />
         </button>
@@ -88,7 +89,8 @@ const DemoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen,
               <button 
                 onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
                 disabled={currentStep === 0}
-                className="p-4 rounded-2xl border bg-accent/50 hover:bg-accent transition-all disabled:opacity-30"
+                className="p-4 rounded-2xl border bg-accent/50 hover:bg-accent transition-all disabled:opacity-30 text-foreground"
+                aria-label="Previous demo step"
               >
                 <ChevronLeft size={24} />
               </button>
@@ -184,7 +186,7 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background selection:bg-primary/20 transition-colors duration-300">
+    <main className="min-h-screen bg-background selection:bg-primary/20 transition-colors duration-300">
       <PublicNavbar />
 
       {/* Hero Section */}
@@ -204,19 +206,21 @@ const LandingPage: React.FC = () => {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed">
               PingMyDB periodically connects to your database to prevent it from going inactive — no queries, no cron jobs, no maintenance.
             </p>
-            <p className="text-sm font-semibold text-primary/80 mb-10 max-w-xl mx-auto bg-primary/5 py-2 px-4 rounded-full border border-primary/10">
+            <p className="text-sm font-bold text-primary mb-10 max-w-xl mx-auto bg-primary/20 py-2 px-4 rounded-full border border-primary/30 shadow-sm">
                Ideal for free-tier and low-traffic databases on Supabase, Neon, MongoDB Atlas, Railway, and Render.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button 
                 onClick={() => navigate('/register')}
                 className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 group shadow-xl shadow-primary/30"
+                aria-label="Register for free"
               >
                 Start Free <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </button>
               <button 
                 onClick={() => setIsDemoOpen(true)}
-                className="w-full sm:w-auto px-8 py-4 rounded-xl border border-border font-bold hover:bg-accent transition-all flex items-center justify-center gap-2 bg-card/50"
+                className="w-full sm:w-auto px-8 py-4 rounded-xl border border-border font-bold hover:bg-accent transition-all flex items-center justify-center gap-2 bg-card/50 text-foreground"
+                aria-label="Watch application demo"
               >
                 <Eye size={20} /> View Demo
               </button>
@@ -256,7 +260,7 @@ const LandingPage: React.FC = () => {
                   <f.icon size={28} />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">{f.title}</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">{f.desc}</p>
+                <p className="text-foreground/80 leading-relaxed text-sm">{f.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -276,8 +280,8 @@ const LandingPage: React.FC = () => {
                       <Lock size={18} />
                    </div>
                    <div>
-                      <h4 className="font-bold mb-2">Encrypted at Rest</h4>
-                      <p className="text-sm text-muted-foreground leading-relaxed">Your database URI is encrypted at rest using industry-standard AES-256 encryption.</p>
+                      <h3 className="text-lg font-bold mb-2">Encrypted at Rest</h3>
+                      <p className="text-sm text-foreground/80 leading-relaxed">Your database URI is encrypted at rest using industry-standard AES-256 encryption.</p>
                    </div>
                 </div>
                 <div className="flex gap-4">
@@ -285,8 +289,8 @@ const LandingPage: React.FC = () => {
                       <Network size={18} />
                    </div>
                    <div>
-                      <h4 className="font-bold mb-2">Zero Data Access</h4>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <h3 className="text-lg font-bold mb-2">Zero Data Access</h3>
+                      <p className="text-sm text-foreground/80 leading-relaxed">
                         We only establish short-lived connections. We never run queries on your data.
                       </p>
                    </div>
@@ -301,7 +305,7 @@ const LandingPage: React.FC = () => {
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl font-extrabold tracking-tight">Simple, Transparent Plans.</h2>
             <p className="text-muted-foreground text-lg">Choose a plan that scales with your infrastructure.</p>
-            <p className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-widest pt-2">
+            <p className="text-xs font-bold text-foreground uppercase tracking-widest pt-2">
                Ping intervals are enforced to prevent abuse and ensure system reliability.
             </p>
           </div>
@@ -353,10 +357,10 @@ const LandingPage: React.FC = () => {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-black px-3 py-1 rounded-full uppercase">Most Popular</div>
               <h3 className="font-bold text-lg mb-2 text-primary">Pro Plan</h3>
               <div className="flex flex-col items-center mb-6">
-                <span className="text-sm text-primary/70 line-through font-bold mb-1">$7.99</span>
+                <span className="text-sm text-primary font-bold mb-1 line-through">$7.99</span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-black text-primary">$3.99</span>
-                  <span className="text-xs text-primary/70 font-bold">/MO</span>
+                  <span className="text-xs text-primary font-bold">/MO</span>
                 </div>
               </div>
               <ul className="space-y-3 mb-8 text-sm text-primary/80">
@@ -434,10 +438,12 @@ const LandingPage: React.FC = () => {
           <div>
             <h4 className="font-bold mb-6 text-sm uppercase tracking-widest text-foreground">Connect</h4>
             <div className="flex gap-4">
-              <a href="https://github.com/orgs/PingMyDB/repositories" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl border border-border bg-card flex items-center justify-center hover:bg-accent transition-colors shadow-sm">
+              <a href="https://github.com/orgs/PingMyDB/repositories" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl border border-border bg-card flex items-center justify-center hover:bg-accent transition-colors shadow-sm text-foreground" aria-label="Visit our Github">
                 <Github size={18} />
               </a>
-              <button className="w-10 h-10 rounded-xl border border-border bg-card flex items-center justify-center hover:bg-accent transition-colors shadow-sm"><Twitter size={18} /></button>
+              <button className="w-10 h-10 rounded-xl border border-border bg-card flex items-center justify-center hover:bg-accent transition-colors shadow-sm text-foreground" aria-label="Follow us on Twitter">
+                <Twitter size={18} />
+              </button>
             </div>
           </div>
         </div>
@@ -451,7 +457,7 @@ const LandingPage: React.FC = () => {
           <DemoModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
         )}
       </AnimatePresence>
-    </div>
+    </main>
   );
 };
 

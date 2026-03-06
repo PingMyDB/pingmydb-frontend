@@ -54,6 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
           <button 
             onClick={onMenuClick}
             className="p-2 -ml-2 rounded-md hover:bg-accent lg:hidden"
+            aria-label="Toggle mobile menu"
           >
             <Menu size={20} />
           </button>
@@ -74,6 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
             onClick={toggleTheme}
             className="p-2.5 rounded-lg border bg-card hover:bg-accent text-muted-foreground transition-all flex items-center justify-center"
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
           >
             {isDark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-blue-500" />}
           </motion.button>
@@ -82,6 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
             <button 
               onClick={() => setShowNotifications(!showNotifications)}
               className={`p-2.5 rounded-lg border bg-card hover:bg-accent text-muted-foreground transition-colors relative ${showNotifications ? 'bg-accent border-primary/20' : ''}`}
+              aria-label={`Open notifications, ${allAlerts.length} total`}
             >
               <Bell size={18} />
               {allAlerts.length > 0 && (
@@ -145,6 +148,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
             <button 
               onClick={() => setShowDropdown(!showDropdown)}
               className="flex items-center gap-2 p-1.5 rounded-full hover:bg-accent transition-colors border border-transparent hover:border-border"
+              aria-label="Open profile menu"
             >
               <img 
                 src={user?.avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin'} 

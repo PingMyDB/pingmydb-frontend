@@ -16,10 +16,14 @@ const DashboardLayout: React.FC = () => {
   const handleResend = async () => {
     if (!user?.email || isResending) return;
     setIsResending(true);
+    const pmdb_token = localStorage.getItem('pmdb_token');
     try {
       const res = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'token': pmdb_token || '' 
+        },
         body: JSON.stringify({ email: user.email })
       });
       const data = await res.json();
@@ -29,7 +33,8 @@ const DashboardLayout: React.FC = () => {
         toast.error(data.message || 'Failed to resend email.');
       }
     } catch (err) {
-      toast.error('Network error. Failed to resend email.');
+      console.error('Resend error:', err);
+      toast.error('Network error. Check your connection.');
     } finally {
       setIsResending(false);
     }

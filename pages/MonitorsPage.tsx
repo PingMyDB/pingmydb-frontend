@@ -352,7 +352,8 @@ const MonitorsPage: React.FC = () => {
         </div>
         <button
           onClick={openModal}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow shadow-primary/20 hover:bg-primary/90 transition-all"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow shadow-primary/20 hover:bg-primary/90 transition-all font-bold"
+          aria-label="Create new database monitor"
         >
           <Plus size={18} /> New Monitor
         </button>
@@ -416,8 +417,9 @@ const MonitorsPage: React.FC = () => {
           </select>
           <button 
             onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="p-1.5 hover:bg-accent rounded-lg transition-colors text-muted-foreground"
+            className="p-1.5 hover:bg-accent rounded-lg transition-colors text-foreground font-bold"
             title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+            aria-label={`Current sort order: ${sortOrder}. Click to toggle.`}
           >
             {sortOrder === 'asc' ? '↑' : '↓'}
           </button>
@@ -518,7 +520,8 @@ const MonitorsPage: React.FC = () => {
                               <button 
                                 onClick={() => handlePause(m.id)} 
                                 title={m.is_paused ? "Resume Monitor" : "Pause Monitor"} 
-                                className={`p-2 rounded-lg transition-colors ${m.is_paused ? 'text-green-500 hover:bg-green-500/10' : 'text-slate-500 hover:bg-slate-500/10'}`}
+                                className={`p-2 rounded-lg transition-colors ${m.is_paused ? 'text-green-600 dark:text-green-400 hover:bg-green-500/10' : 'text-foreground hover:bg-accent'}`}
+                                aria-label={m.is_paused ? "Resume monitoring" : "Pause monitoring"}
                               >
                                 {m.is_paused ? <Play size={16} /> : <Pause size={16} />}
                               </button>
@@ -527,7 +530,8 @@ const MonitorsPage: React.FC = () => {
                               <button 
                                 onClick={() => handleDelete(m.id)} 
                                 title="Delete Monitor"
-                                className="p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
+                                className="p-2 rounded-lg hover:bg-destructive/10 text-destructive dark:text-red-400 transition-colors"
+                                aria-label="Delete monitor"
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -537,6 +541,7 @@ const MonitorsPage: React.FC = () => {
                                 onClick={() => handlePing(m.id)} 
                                 title="Manual Ping"
                                 className="p-2 rounded-lg text-primary hover:bg-primary/10 transition-colors"
+                                aria-label="Trigger manual ping"
                               >
                                 <RefreshCw size={16} />
                               </button>
@@ -578,7 +583,11 @@ const MonitorsPage: React.FC = () => {
                   <h2 className="text-2xl font-bold">New Database Monitor</h2>
                   <p className="text-sm text-muted-foreground">Add a database URI to monitor.</p>
                 </div>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 rounded-full hover:bg-accent">
+                <button 
+                  onClick={() => setIsModalOpen(false)} 
+                  className="p-2 rounded-full hover:bg-accent text-foreground"
+                  aria-label="Close modal"
+                >
                   <X size={20} />
                 </button>
               </div>

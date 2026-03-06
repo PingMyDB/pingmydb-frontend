@@ -50,7 +50,8 @@ const PublicNavbar: React.FC = () => {
           <div className="flex items-center gap-2 sm:gap-4">
             <button 
               onClick={toggleTheme}
-              className="p-2 rounded-lg border border-border bg-card/50 hover:bg-accent text-muted-foreground transition-all flex items-center justify-center"
+              className="p-2 rounded-lg border border-border bg-card/50 hover:bg-accent text-muted-foreground transition-all flex items-center justify-center font-bold"
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             >
               {isDark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-blue-500" />}
             </button>
