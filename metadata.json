@@ -1,0 +1,6 @@
+
+{
+  "name": "PingMyDb",
+  "description": "A production-ready SaaS dashboard for monitoring database health endpoints and preventing cold starts on free-tier hosting services.",
+  "requestFramePermissions": []
+}
