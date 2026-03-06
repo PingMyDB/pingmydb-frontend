@@ -13,13 +13,9 @@ import {
   ExternalLink,
   ShieldCheck,
   Calendar,
-<<<<<<< HEAD
   Activity,
   AlertTriangle,
   X
-=======
-  Activity
->>>>>>> origin/main
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApiKeyStore } from '../store/apiKeyStore';
@@ -31,10 +27,7 @@ const ApiKeyPage: React.FC = () => {
     const [newKeyName, setNewKeyName] = useState('');
     const [revealedKey, setRevealedKey] = useState<string | null>(null);
     const [copiedKey, setCopiedKey] = useState(false);
-<<<<<<< HEAD
     const [keyToDelete, setKeyToDelete] = useState<any>(null);
-=======
->>>>>>> origin/main
 
     useEffect(() => {
         fetchKeys();
@@ -60,7 +53,6 @@ const ApiKeyPage: React.FC = () => {
         toast.info("Copied to clipboard");
     };
 
-<<<<<<< HEAD
     const handleDelete = async () => {
         if (!keyToDelete) return;
         try {
@@ -72,8 +64,6 @@ const ApiKeyPage: React.FC = () => {
         }
     };
 
-=======
->>>>>>> origin/main
     return (
         <div className="max-w-5xl mx-auto space-y-10 pb-20">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -125,15 +115,7 @@ const ApiKeyPage: React.FC = () => {
                                             </div>
                                         </div>
                                         <button 
-<<<<<<< HEAD
                                             onClick={() => setKeyToDelete(key)}
-=======
-                                            onClick={() => {
-                                                if (confirm('Revoking this key will immediately break any integrations using it. Continue?')) {
-                                                    revokeKey(key.id);
-                                                }
-                                            }}
->>>>>>> origin/main
                                             className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all"
                                         >
                                             <Trash2 size={18} />
@@ -300,7 +282,6 @@ const ApiKeyPage: React.FC = () => {
                     </div>
                 )}
             </AnimatePresence>
-<<<<<<< HEAD
 
             {/* Modal: Revoke Confirmation */}
             <AnimatePresence>
@@ -347,8 +328,6 @@ const ApiKeyPage: React.FC = () => {
                     </div>
                 )}
             </AnimatePresence>
-=======
->>>>>>> origin/main
         </div>
     );
 };

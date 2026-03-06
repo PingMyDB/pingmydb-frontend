@@ -16,23 +16,17 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIncidentStore, Incident } from '../store/incidentStore';
 import { toast } from 'sonner';
-<<<<<<< HEAD
 import ConfirmationModal from '../components/ConfirmationModal';
-=======
->>>>>>> origin/main
 
 const IncidentPage: React.FC = () => {
     const { incidents, fetchIncidents, createIncident, addUpdate, deleteIncident, isLoading } = useIncidentStore();
     const [isAdding, setIsAdding] = useState(false);
     const [isUpdating, setIsUpdating] = useState<number | null>(null);
-<<<<<<< HEAD
 
     // Delete Modal State
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [incidentToDelete, setIncidentToDelete] = useState<number | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
-=======
->>>>>>> origin/main
     
     // Form States
     const [newTitle, setNewTitle] = useState('');
@@ -149,12 +143,8 @@ const IncidentPage: React.FC = () => {
                                     )}
                                     <button 
                                         onClick={() => {
-<<<<<<< HEAD
                                             setIncidentToDelete(incident.id);
                                             setIsDeleteModalOpen(true);
-=======
-                                            if (confirm('Delete this incident history?')) deleteIncident(incident.id);
->>>>>>> origin/main
                                         }}
                                         className="p-2.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all"
                                     >
@@ -247,7 +237,6 @@ const IncidentPage: React.FC = () => {
                     </div>
                 )}
             </AnimatePresence>
-<<<<<<< HEAD
             
             <ConfirmationModal 
                 isOpen={isDeleteModalOpen}
@@ -276,8 +265,6 @@ const IncidentPage: React.FC = () => {
                 variant="danger"
                 isLoading={isDeleting}
             />
-=======
->>>>>>> origin/main
         </div>
     );
 };

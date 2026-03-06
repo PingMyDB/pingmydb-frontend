@@ -13,12 +13,8 @@ import {
   Info,
   AlertCircle,
   Shield,
-<<<<<<< HEAD
   Search,
   Github
-=======
-  Search
->>>>>>> origin/main
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -398,12 +394,9 @@ const DocsPage: React.FC = () => {
            <div className="flex items-center gap-6">
               <Link to="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
               <Link to="/terms" className="hover:text-primary transition-colors">Terms & Conditions</Link>
-<<<<<<< HEAD
               <a href="https://github.com/orgs/PingMyDB/repositories" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                  <Github size={14} />
               </a>
-=======
->>>>>>> origin/main
               <a href="#" className="hover:text-primary transition-colors flex items-center gap-1.5">
                  Status <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
               </a>

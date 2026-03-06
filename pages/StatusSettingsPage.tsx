@@ -74,7 +74,6 @@ const StatusSettingsPage: React.FC = () => {
                                     <p className="text-xs text-muted-foreground">Decide who can view your system health metrics.</p>
                                 </div>
                                 <div 
-<<<<<<< HEAD
                                     onClick={async () => {
                                         const newVal = !isPublic;
                                         setIsPublic(newVal);
@@ -86,9 +85,6 @@ const StatusSettingsPage: React.FC = () => {
                                             toast.error(err.message);
                                         }
                                     }}
-=======
-                                    onClick={() => setIsPublic(!isPublic)}
->>>>>>> origin/main
                                     className={`w-12 h-6 rounded-full cursor-pointer transition-colors relative ${isPublic ? 'bg-primary' : 'bg-muted'}`}
                                 >
                                     <motion.div 

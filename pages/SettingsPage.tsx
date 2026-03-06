@@ -14,20 +14,12 @@ import {
   Bell,
   Mail,
   MessageSquare,
-<<<<<<< HEAD
-=======
-  Users,
->>>>>>> origin/main
   Shield,
   Clock
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNotificationStore } from '../store/notificationStore';
 import NotificationSettings from '../components/NotificationSettings';
-<<<<<<< HEAD
-=======
-import TeamManagement from '../components/TeamManagement';
->>>>>>> origin/main
 import ConfirmationModal from '../components/ConfirmationModal';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
@@ -49,11 +41,7 @@ const SettingsPage: React.FC = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-<<<<<<< HEAD
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'notifications'>((searchParams.get('tab') as any) || 'profile');
-=======
-  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'notifications' | 'team'>((searchParams.get('tab') as any) || 'profile');
->>>>>>> origin/main
   const { channels, isLoading: isNotifLoading, fetchChannels, addChannel, deleteChannel, updateChannel, testChannel } = useNotificationStore();
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(user?.avatarUrl || '');
@@ -187,15 +175,9 @@ const SettingsPage: React.FC = () => {
         <p className="text-muted-foreground">Manage your account and API preferences.</p>
       </div>
 
-<<<<<<< HEAD
       <div className="grid lg:grid-cols-4 gap-8 items-start">
         <div className="lg:col-span-1 sticky top-0 py-2">
           <nav className="flex flex-col gap-1">
-=======
-      <div className="grid lg:grid-cols-4 gap-8">
-        <div className="lg:col-span-1">
-          <nav className="flex flex-col gap-1 sticky top-24">
->>>>>>> origin/main
             <button 
               onClick={() => handleTabChange('profile')}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-colors ${activeTab === 'profile' ? 'bg-accent text-primary' : 'hover:bg-accent text-muted-foreground'}`}
@@ -214,15 +196,6 @@ const SettingsPage: React.FC = () => {
             >
               <Bell size={16} /> Notifications
             </button>
-<<<<<<< HEAD
-=======
-            <button 
-              onClick={() => handleTabChange('team')}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-colors ${activeTab === 'team' ? 'bg-accent text-primary' : 'hover:bg-accent text-muted-foreground'}`}
-            >
-              <Users size={16} /> Team
-            </button>
->>>>>>> origin/main
           </nav>
         </div>
 
@@ -376,12 +349,6 @@ const SettingsPage: React.FC = () => {
             />
           )}
 
-<<<<<<< HEAD
-=======
-          {activeTab === 'team' && (
-            <TeamManagement />
-          )}
->>>>>>> origin/main
 
 
           {activeTab === 'security' && (

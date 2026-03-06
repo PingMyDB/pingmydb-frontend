@@ -4,7 +4,6 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import OnboardingModal from '../components/OnboardingModal';
-<<<<<<< HEAD
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../src/config';
 import { toast } from 'sonner';
@@ -74,33 +73,6 @@ const DashboardLayout: React.FC = () => {
 
         <OnboardingModal />
       </div>
-=======
-
-const DashboardLayout: React.FC = () => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-
-  return (
-    <div className="flex h-screen w-full bg-background overflow-hidden">
-      {/* Fixed Sidebar */}
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
-      
-      {/* Scrollable Right Side */}
-      <div className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-slate-50/30 dark:bg-background">
-        {/* Navbar stays at the top of the right side */}
-        <div className="z-30 border-b border-border/60">
-          <Navbar onMenuClick={() => setSidebarOpen(true)} />
-        </div>
-        
-        {/* This is the only part that scrolls */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 custom-scrollbar">
-          <div className="max-w-7xl mx-auto space-y-8 pb-10">
-            <Outlet />
-          </div>
-        </main>
-      </div>
-
-      <OnboardingModal />
->>>>>>> origin/main
     </div>
   );
 };

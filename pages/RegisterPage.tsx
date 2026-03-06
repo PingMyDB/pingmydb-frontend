@@ -3,14 +3,9 @@ import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-<<<<<<< HEAD
 import { Database, Mail, Lock, Loader2, ArrowLeft, User, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../src/config';
-=======
-import { Database, Mail, Lock, Loader2, ArrowLeft, User, Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
->>>>>>> origin/main
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,7 +15,6 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-<<<<<<< HEAD
   const [emailError, setEmailError] = useState('');
 
   const checkEmailExists = async (checkEmail: string) => {
@@ -44,8 +38,6 @@ const RegisterPage: React.FC = () => {
       console.error(e);
     }
   };
-=======
->>>>>>> origin/main
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,14 +74,11 @@ const RegisterPage: React.FC = () => {
 
         <div className="bg-card border rounded-2xl p-8 shadow-xl shadow-black/5">
           <form onSubmit={handleSubmit} className="space-y-6">
-<<<<<<< HEAD
             {emailError && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-3 mb-2 rounded-xl bg-destructive/10 border border-destructive/20 flex items-center gap-2 text-destructive text-sm font-medium">
                 <AlertCircle size={16} /> {emailError}
               </motion.div>
             )}
-=======
->>>>>>> origin/main
             <div className="space-y-2">
               <label className="text-sm font-medium leading-none" htmlFor="name">
                 Full Name
@@ -104,10 +93,7 @@ const RegisterPage: React.FC = () => {
                   className="flex h-12 w-full rounded-xl border border-input bg-background pl-10 pr-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-<<<<<<< HEAD
                   autoComplete="name"
-=======
->>>>>>> origin/main
                 />
               </div>
             </div>
@@ -125,16 +111,12 @@ const RegisterPage: React.FC = () => {
                   placeholder="name@example.com"
                   className="flex h-12 w-full rounded-xl border border-input bg-background pl-10 pr-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all"
                   value={email}
-<<<<<<< HEAD
                   onBlur={() => checkEmailExists(email)}
                   onChange={(e) => {
                     setEmail(e.target.value);
                     if (emailError) setEmailError('');
                   }}
                   autoComplete="email"
-=======
-                  onChange={(e) => setEmail(e.target.value)}
->>>>>>> origin/main
                 />
               </div>
             </div>
@@ -153,10 +135,7 @@ const RegisterPage: React.FC = () => {
                   className="flex h-12 w-full rounded-xl border border-input bg-background pl-10 pr-10 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-<<<<<<< HEAD
                   autoComplete="new-password"
-=======
->>>>>>> origin/main
                 />
                 <button
                   type="button"
@@ -170,11 +149,7 @@ const RegisterPage: React.FC = () => {
 
             <button
               type="submit"
-<<<<<<< HEAD
               disabled={isLoading || !!emailError}
-=======
-              disabled={isLoading}
->>>>>>> origin/main
               className="inline-flex items-center justify-center rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-4 py-2 w-full shadow-lg shadow-primary/25 disabled:opacity-50"
             >
               {isLoading ? <Loader2 className="animate-spin" size={18} /> : 'Create Account'}

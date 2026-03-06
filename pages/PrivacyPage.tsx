@@ -1,11 +1,7 @@
 import PublicNavbar from '../components/PublicNavbar';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-<<<<<<< HEAD
 import { Eye, Lock, ShieldCheck, Database, Server, Mail, Github } from 'lucide-react';
-=======
-import { Eye, Lock, ShieldCheck, Database, Server, Mail } from 'lucide-react';
->>>>>>> origin/main
 
 const PrivacyPage: React.FC = () => {
   return (
@@ -131,18 +127,12 @@ const PrivacyPage: React.FC = () => {
             <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center text-background font-black">P</div>
             <p>© 2026 PingMyDb Systems Inc.</p>
           </div>
-<<<<<<< HEAD
           <div className="flex gap-8 items-center">
             <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
             <Link to="/privacy" className="text-foreground font-black tracking-tight">Privacy</Link>
             <a href="https://github.com/orgs/PingMyDB/repositories" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
               <Github size={18} />
             </a>
-=======
-          <div className="flex gap-8">
-            <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
-            <Link to="/privacy" className="text-foreground font-black tracking-tight">Privacy</Link>
->>>>>>> origin/main
           </div>
         </div>
       </footer>

@@ -311,20 +311,12 @@ const LandingPage: React.FC = () => {
             <div className="p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center">
               <h3 className="font-bold text-lg mb-2">Starter</h3>
               <div className="flex items-baseline gap-1 mb-6">
-<<<<<<< HEAD
                 <span className="text-3xl font-black">$0</span>
-=======
-                <span className="text-3xl font-black">₹0</span>
->>>>>>> origin/main
                 <span className="text-xs text-muted-foreground font-bold">FREE</span>
               </div>
               <ul className="space-y-3 mb-8 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 2 Active Monitors</li>
-<<<<<<< HEAD
                 <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 12h Ping Interval</li>
-=======
-                <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 1h Ping Interval</li>
->>>>>>> origin/main
               </ul>
               <button 
                 onClick={() => navigate('/register')}
@@ -338,25 +330,15 @@ const LandingPage: React.FC = () => {
             <div className="p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center">
               <h3 className="font-bold text-lg mb-2">Student</h3>
               <div className="flex flex-col items-center mb-6">
-<<<<<<< HEAD
                 <span className="text-sm text-muted-foreground line-through font-bold mb-1">$1.99</span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-black">$0.99</span>
-=======
-                <span className="text-sm text-muted-foreground line-through font-bold mb-1">₹79</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black">₹39</span>
->>>>>>> origin/main
                   <span className="text-xs text-muted-foreground font-bold">/MO</span>
                 </div>
               </div>
               <ul className="space-y-3 mb-8 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 5 Active Monitors</li>
-<<<<<<< HEAD
                 <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 1h Ping Interval</li>
-=======
-                <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 10m Ping Interval</li>
->>>>>>> origin/main
               </ul>
               <button 
                 onClick={() => navigate('/pricing')}
@@ -371,25 +353,15 @@ const LandingPage: React.FC = () => {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-black px-3 py-1 rounded-full uppercase">Most Popular</div>
               <h3 className="font-bold text-lg mb-2 text-primary">Pro Plan</h3>
               <div className="flex flex-col items-center mb-6">
-<<<<<<< HEAD
                 <span className="text-sm text-primary/70 line-through font-bold mb-1">$7.99</span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-black text-primary">$3.99</span>
-=======
-                <span className="text-sm text-primary/70 line-through font-bold mb-1">₹199</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black text-primary">₹99</span>
->>>>>>> origin/main
                   <span className="text-xs text-primary/70 font-bold">/MO</span>
                 </div>
               </div>
               <ul className="space-y-3 mb-8 text-sm text-primary/80">
                 <li className="flex items-center gap-2"><Check size={14} /> 20 Active Monitors</li>
-<<<<<<< HEAD
                 <li className="flex items-center gap-2"><Check size={14} /> 1h Ping Interval</li>
-=======
-                <li className="flex items-center gap-2"><Check size={14} /> 10m Ping Interval</li>
->>>>>>> origin/main
                 <li className="flex items-center gap-2"><Check size={14} /> Discord, Slack & Email</li>
               </ul>
               <button 
@@ -404,26 +376,15 @@ const LandingPage: React.FC = () => {
             <div className="p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center">
               <h3 className="font-bold text-lg mb-2">Enterprise</h3>
               <div className="flex flex-col items-center mb-6">
-<<<<<<< HEAD
                 <span className="text-sm text-muted-foreground line-through font-bold mb-1">$19.99</span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-black">$9.99</span>
-=======
-                <span className="text-sm text-muted-foreground line-through font-bold mb-1">₹799</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black">₹399</span>
->>>>>>> origin/main
                   <span className="text-xs text-muted-foreground font-bold">/MO</span>
                 </div>
               </div>
               <ul className="space-y-3 mb-8 text-sm text-muted-foreground">
-<<<<<<< HEAD
                 <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 150 Active Monitors</li>
                 <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 5m Ping Interval</li>
-=======
-                <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 1000 Active Monitors</li>
-                <li className="flex items-center gap-2"><Check size={14} className="text-primary" /> 1m Ping Interval</li>
->>>>>>> origin/main
               </ul>
               <button 
                 onClick={() => navigate('/pricing')}
@@ -473,13 +434,9 @@ const LandingPage: React.FC = () => {
           <div>
             <h4 className="font-bold mb-6 text-sm uppercase tracking-widest text-foreground">Connect</h4>
             <div className="flex gap-4">
-<<<<<<< HEAD
               <a href="https://github.com/orgs/PingMyDB/repositories" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl border border-border bg-card flex items-center justify-center hover:bg-accent transition-colors shadow-sm">
                 <Github size={18} />
               </a>
-=======
-              <button className="w-10 h-10 rounded-xl border border-border bg-card flex items-center justify-center hover:bg-accent transition-colors shadow-sm"><Github size={18} /></button>
->>>>>>> origin/main
               <button className="w-10 h-10 rounded-xl border border-border bg-card flex items-center justify-center hover:bg-accent transition-colors shadow-sm"><Twitter size={18} /></button>
             </div>
           </div>

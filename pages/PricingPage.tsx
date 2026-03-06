@@ -15,13 +15,9 @@ import {
   Sparkles,
   ChevronRight,
   Sun,
-<<<<<<< HEAD
   Moon,
   AlertTriangle,
   Github
-=======
-  Moon
->>>>>>> origin/main
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,11 +25,7 @@ import { useAuth } from '../context/AuthContext';
 import { useMonitorStore } from '../store/monitorStore';
 import { toast } from 'sonner';
 import { API_BASE_URL } from '../src/config';
-<<<<<<< HEAD
 import ConfirmationModal from '../components/ConfirmationModal';
-=======
-import TeamManagement from '../components/TeamManagement';
->>>>>>> origin/main
 
 interface PricingCardProps {
   key?: string | number;
@@ -101,11 +93,7 @@ const PricingCard = ({
           )}
           <div className="flex items-baseline gap-1">
             <span className={`text-5xl font-black tracking-tight ${isCurrent ? 'text-white' : 'text-foreground'}`}>{price}</span>
-<<<<<<< HEAD
             {price !== '$0' && <span className={`font-semibold text-sm ${isCurrent ? 'text-white/60' : 'text-muted-foreground'}`}>/mo</span>}
-=======
-            {price !== '₹0' && <span className={`font-semibold text-sm ${isCurrent ? 'text-white/60' : 'text-muted-foreground'}`}>/mo</span>}
->>>>>>> origin/main
           </div>
         </div>
       </div>
@@ -227,7 +215,6 @@ const PricingPage: React.FC = () => {
   };
 
   const [showAllPlans, setShowAllPlans] = React.useState(!user);
-<<<<<<< HEAD
 
    const [isProcessing, setIsProcessing] = React.useState<string | null>(null);
    const [isCancelling, setIsCancelling] = React.useState(false);
@@ -262,26 +249,6 @@ const PricingPage: React.FC = () => {
         setIsCancelling(false);
     }
   };
-=======
-  const [currency, setCurrency] = React.useState<'INR' | 'USD'>('INR');
-
-  useEffect(() => {
-    const fetchCountry = async () => {
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        const data = await res.json();
-        if (data.country_code !== 'IN') {
-          setCurrency('USD');
-        }
-      } catch (e) {
-        console.error('Failed to detect country:', e);
-      }
-    };
-    fetchCountry();
-  }, []);
-
-  const [isProcessing, setIsProcessing] = React.useState<string | null>(null);
->>>>>>> origin/main
 
   const handleUpgrade = async (planId: string, amount: number) => {
     if (!user) {
@@ -290,11 +257,7 @@ const PricingPage: React.FC = () => {
     }
 
     if (planId === 'free') {
-<<<<<<< HEAD
         toast.error("You cannot downgrade to free plan automatically. Please use the cancel button instead.");
-=======
-        toast.error("You cannot downgrade to free plan automatically. Please contact support.");
->>>>>>> origin/main
         return;
     }
 
@@ -306,16 +269,10 @@ const PricingPage: React.FC = () => {
         return;
     }
 
-<<<<<<< HEAD
     const token = localStorage.getItem('pmdb_token');
 
     try {
         setIsProcessing(planId);
-=======
-    try {
-        setIsProcessing(planId);
-        const token = localStorage.getItem('pmdb_token');
->>>>>>> origin/main
         
         // 1. Create Order
         const orderRes = await fetch(`${API_BASE_URL}/api/payments/create-order`, {
@@ -326,11 +283,7 @@ const PricingPage: React.FC = () => {
             },
             body: JSON.stringify({
                 amount: amount, 
-<<<<<<< HEAD
                 currency: 'USD',
-=======
-                currency: currency,
->>>>>>> origin/main
                 planId: planId
             })
         });
@@ -350,17 +303,9 @@ const PricingPage: React.FC = () => {
             description: `Upgrade to ${planId.charAt(0).toUpperCase() + planId.slice(1)} Plan`,
             order_id: orderData.id,
             handler: async function (response: any) {
-<<<<<<< HEAD
                 const verificationToast = toast.loading("Verifying payment...");
                 
                 try {
-=======
-                // Show a "Verifying..." toast that we can update later
-                const verificationToast = toast.loading("Verifying your payment...");
-                
-                try {
-                     // 3. Verify Payment
->>>>>>> origin/main
                      const verifyRes = await fetch(`${API_BASE_URL}/api/payments/verify-payment`, {
                         method: 'POST',
                         headers: {
@@ -384,27 +329,12 @@ const PricingPage: React.FC = () => {
                     }
 
                     toast.success("Upgrade successful!", { id: verificationToast });
-<<<<<<< HEAD
                     localStorage.setItem('pmdb_user', JSON.stringify(verifyData.user));
                     setIsProcessing(null);
                     setShowAllPlans(false);
                     setTimeout(() => window.location.reload(), 1000);
 
                 } catch (err) {
-=======
-                    
-                    // Update local user and reload to reflect changes
-                    const currentUser = JSON.parse(localStorage.getItem('pmdb_user') || '{}');
-                    const updatedUser = { ...currentUser, ...verifyData.user };
-                    localStorage.setItem('pmdb_user', JSON.stringify(updatedUser));
-                    
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
-
-                } catch (err) {
-                    console.error(err);
->>>>>>> origin/main
                     toast.error("Verification error", { id: verificationToast });
                     setIsProcessing(null);
                 }
@@ -413,13 +343,7 @@ const PricingPage: React.FC = () => {
                 name: user.name,
                 email: user.email,
             },
-<<<<<<< HEAD
             theme: { color: "#3b82f6" },
-=======
-            theme: {
-                color: "#3b82f6"
-            },
->>>>>>> origin/main
             modal: {
                 ondismiss: function() {
                     setIsProcessing(null);
@@ -429,29 +353,14 @@ const PricingPage: React.FC = () => {
         };
 
         const rzp1 = new (window as any).Razorpay(options);
-<<<<<<< HEAD
         rzp1.on('payment.failed', function (response: any){
             setIsProcessing(null);
             toast.error(response.error.description || "Payment declined");
         });
-=======
-        
-        rzp1.on('payment.failed', function (response: any){
-            setIsProcessing(null);
-            const errorMsg = response.error.description || "Payment declined";
-            toast.error(errorMsg);
-            console.error("Payment Failed:", response.error);
-        });
-
->>>>>>> origin/main
         rzp1.open();
 
     } catch (err: any) {
         setIsProcessing(null);
-<<<<<<< HEAD
-=======
-        console.error(err);
->>>>>>> origin/main
         toast.error(err.message || "Payment initialization failed");
     }
   };
@@ -460,21 +369,13 @@ const PricingPage: React.FC = () => {
     {
       id: 'free',
       name: 'Starter',
-<<<<<<< HEAD
       price: '$0',
-=======
-      price: currency === 'INR' ? '₹0' : '$0',
->>>>>>> origin/main
       priceValue: 0,
       limit: 2,
       description: 'The foundation for your small project monitoring.',
       features: [
         '2 Active Monitors',
-<<<<<<< HEAD
         '12-hour ping interval',
-=======
-        '1-hour ping interval',
->>>>>>> origin/main
         '24-hour log retention',
         'Standard Email alerts',
       ],
@@ -483,26 +384,15 @@ const PricingPage: React.FC = () => {
     {
       id: 'student',
       name: 'Student',
-<<<<<<< HEAD
       price: '$0.99',
       priceValue: 0.99,
       originalPrice: '$1.99',
-=======
-      price: currency === 'INR' ? '₹39' : '$1',
-      priceValue: currency === 'INR' ? 39 : 1,
-      originalPrice: currency === 'INR' ? '₹79' : '$2',
->>>>>>> origin/main
       limit: 5,
       description: 'Empowering students to keep their apps alive.',
       features: [
         '5 Active Monitors',
-<<<<<<< HEAD
         '1-hour ping interval',
         '3-day log history',
-=======
-        '10-minute ping interval',
-        '7-day log history',
->>>>>>> origin/main
         'Email & Discord alerts',
         'Full API access',
       ],
@@ -511,28 +401,17 @@ const PricingPage: React.FC = () => {
     {
       id: 'pro',
       name: 'Pro',
-<<<<<<< HEAD
       price: '$3.99',
       priceValue: 3.99,
       originalPrice: '$7.99',
-=======
-      price: currency === 'INR' ? '₹99' : '$3.99',
-      priceValue: currency === 'INR' ? 99 : 3.99,
-      originalPrice: currency === 'INR' ? '₹199' : '$7.99',
->>>>>>> origin/main
       limit: 20,
       description: 'Production-grade reliability for developers.',
       isPopular: true,
       features: [
         '20 Active Monitors',
         '3 Team Seats',
-<<<<<<< HEAD
         '1-hour ping interval',
         '15-day log history',
-=======
-        '10-minute ping interval',
-        '30-day log history',
->>>>>>> origin/main
         'Discord, Slack & Email alerts',
         'Full API & Webhooks',
       ],
@@ -541,7 +420,6 @@ const PricingPage: React.FC = () => {
     {
       id: 'enterprise',
       name: 'Enterprise',
-<<<<<<< HEAD
       price: '$9.99',
       priceValue: 9.99,
       originalPrice: '$19.99',
@@ -552,18 +430,6 @@ const PricingPage: React.FC = () => {
         'Unlimited Team Seats',
         '5-minute ping interval',
         '30-day detailed logs',
-=======
-      price: currency === 'INR' ? '₹399' : '$9.99',
-      priceValue: currency === 'INR' ? 399 : 9.99,
-      originalPrice: currency === 'INR' ? '₹799' : '$19.99',
-      limit: 1000,
-      description: 'Scale without limits for your entire team.',
-      features: [
-        '1000 Active Monitors',
-        'Unlimited Team Seats',
-        '1-minute ping interval',
-        '90-day detailed logs',
->>>>>>> origin/main
         'Priority 24/7 support',
         'Team collaboration',
       ],
@@ -575,7 +441,6 @@ const PricingPage: React.FC = () => {
     if (!user) return null;
     const signupDate = user.created_at ? new Date(user.created_at) : new Date();
     const today = new Date();
-<<<<<<< HEAD
     const nextBilling = user.current_period_end ? new Date(user.current_period_end) : new Date(signupDate);
     
     if (!user.current_period_end) {
@@ -587,15 +452,6 @@ const PricingPage: React.FC = () => {
     const currentPlan = plans.find(p => p.id === user.plan) || plans[0];
     return {
       date: nextBilling.toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' }),
-=======
-    const nextBilling = new Date(signupDate);
-    while (nextBilling <= today) {
-      nextBilling.setDate(nextBilling.getDate() + 30);
-    }
-    const currentPlan = plans.find(p => p.id === user.plan) || plans[0];
-    return {
-      date: nextBilling.toLocaleDateString('en-IN', { month: 'long', day: 'numeric' }),
->>>>>>> origin/main
       amount: currentPlan.priceValue.toFixed(2)
     };
   }, [user]);
@@ -638,11 +494,7 @@ const PricingPage: React.FC = () => {
               icon={Database} 
               label="Current Capacity" 
               value={monitors.length.toString()} 
-<<<<<<< HEAD
               subvalue={plans.find(p => p.id === user.plan)?.limit?.toString()}
-=======
-              subvalue={(plans.find(p => p.id === user.plan)?.limit === 1000 ? '∞' : plans.find(p => p.id === user.plan)?.limit.toString())}
->>>>>>> origin/main
             />
             <PlanMetric 
               icon={Globe} 
@@ -667,7 +519,6 @@ const PricingPage: React.FC = () => {
                      <Sparkles size={12} /> Billing Schedule
                    </div>
                    <h3 className="text-3xl font-black mb-4">Subscription Intelligence</h3>
-<<<<<<< HEAD
                    {billingInfo && user?.role !== 'admin' && (
                      <p className="text-lg text-muted-foreground/80 leading-relaxed font-medium">
                        Your next automated maintenance cycle for <span className="text-foreground font-black underline decoration-primary decoration-4 underline-offset-4">${billingInfo.amount}</span> is scheduled for <span className="text-foreground font-black">{billingInfo.date}</span>.
@@ -676,11 +527,6 @@ const PricingPage: React.FC = () => {
                    {user?.role === 'admin' && (
                      <p className="text-lg text-muted-foreground/80 leading-relaxed font-medium">
                        You are an Administrator. Billing and payment cycles are managed externally and your premium access is permanent.
-=======
-                   {billingInfo && (
-                     <p className="text-lg text-muted-foreground/80 leading-relaxed font-medium">
-                       Your next automated maintenance cycle for <span className="text-foreground font-black underline decoration-primary decoration-4 underline-offset-4">₹{billingInfo.amount}</span> is scheduled for <span className="text-foreground font-black">{billingInfo.date}</span>.
->>>>>>> origin/main
                      </p>
                    )}
                 </div>
@@ -694,7 +540,6 @@ const PricingPage: React.FC = () => {
                        Explore Tiers
                      </button>
                    )}
-<<<<<<< HEAD
                    {user?.role !== 'admin' && (
                      <button className="px-8 py-4 rounded-2xl bg-card border border-white/10 hover:bg-accent transition-all flex items-center gap-3 text-sm font-black shadow-lg">
                        <CreditCard size={18} /> Financial Portal
@@ -732,26 +577,6 @@ const PricingPage: React.FC = () => {
              variant="warning"
            />
 
-=======
-                   <button className="px-8 py-4 rounded-2xl bg-card border border-white/10 hover:bg-accent transition-all flex items-center gap-3 text-sm font-black shadow-lg">
-                     <CreditCard size={18} /> Financial Portal
-                   </button>
-                </div>
-             </div>
-          </motion.div>
-
-          {/* Team Management Section (New) */}
-          {user.plan !== 'free' && (
-             <motion.div 
-               initial={{ opacity: 0, y: 30 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ delay: 0.1 }}
-               className="bg-card/30 backdrop-blur-3xl border border-white/5 rounded-[3rem] p-10 shadow-2xl"
-             >
-                 <TeamManagement />
-             </motion.div>
-          )}
->>>>>>> origin/main
         </motion.div>
       )}
 
@@ -815,11 +640,7 @@ const PricingPage: React.FC = () => {
           {visiblePlans.map((plan, idx) => {
             const isCurrentPlan = !!user && user.plan === plan.id;
             const usagePercent = isCurrentPlan ? Math.min((monitors.length / plan.limit) * 100, 100) : 0;
-<<<<<<< HEAD
             const usageText = isCurrentPlan ? `${monitors.length} / ${plan.limit}` : '';
-=======
-            const usageText = isCurrentPlan ? `${monitors.length} / ${plan.limit === 1000 ? '∞' : plan.limit}` : '';
->>>>>>> origin/main
             
             let ctaText = plan.ctaText;
             if (!user) {
@@ -965,7 +786,6 @@ const PricingPage: React.FC = () => {
        {content}
 
        <footer className="border-t border-border py-20 text-center bg-muted/20">
-<<<<<<< HEAD
         <div className="flex flex-col items-center gap-6">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
@@ -980,15 +800,6 @@ const PricingPage: React.FC = () => {
           </div>
           <p className="text-sm text-muted-foreground font-medium">&copy; {new Date().getFullYear()} PingMyDb. All rights reserved.</p>
         </div>
-=======
-        <div className="flex items-center justify-center gap-3 mb-6">
-          <div className="w-8 h-8 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
-            <Database size={18} />
-          </div>
-          <span className="text-lg font-black tracking-widest uppercase">PingMyDb</span>
-        </div>
-        <p className="text-sm text-muted-foreground font-medium">&copy; {new Date().getFullYear()} PingMyDb. All rights reserved.</p>
->>>>>>> origin/main
       </footer>
     </div>
   );

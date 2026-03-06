@@ -61,25 +61,17 @@ export interface User {
   name: string;
   avatarUrl?: string;
   apiKey: string;
-<<<<<<< HEAD
   is_verified?: boolean;
-=======
->>>>>>> origin/main
   plan: 'free' | 'student' | 'pro' | 'enterprise';
   role: 'user' | 'admin';
   student_status?: 'none' | 'pending' | 'verified';
   institution_name?: string;
-<<<<<<< HEAD
   is_status_public?: boolean;
   status_slug?: string;
   hasSeenOnboarding?: boolean;
   created_at?: string;
   cancel_at_period_end?: boolean;
   current_period_end?: string;
-=======
-  hasSeenOnboarding?: boolean;
-  created_at?: string;
->>>>>>> origin/main
 }
 
 export interface AdminStats {

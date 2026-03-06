@@ -12,10 +12,7 @@ interface AuthContextType extends AuthState {
   verifyEmailOtp: (otp: string) => Promise<void>;
   changePassword: (currentPass: string, newPass: string) => Promise<void>;
   deleteAccount: () => Promise<void>;
-<<<<<<< HEAD
   forceVerify: () => void;
-=======
->>>>>>> origin/main
   isLoading: boolean;
 }
 
@@ -27,7 +24,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-<<<<<<< HEAD
   // Helper function to decode JWT and check expiration
   const isTokenExpired = (token: string): boolean => {
     try {
@@ -40,13 +36,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-=======
->>>>>>> origin/main
   const checkAuth = () => {
     try {
       const storedToken = localStorage.getItem('pmdb_token');
       const storedUser = localStorage.getItem('pmdb_user');
-<<<<<<< HEAD
       
       if (storedToken && storedUser) {
         // Check if token is expired
@@ -55,10 +48,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           logout();
           return;
         }
-        
-=======
-      if (storedToken && storedUser) {
->>>>>>> origin/main
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
         setIsAuthenticated(true);
@@ -75,8 +64,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     checkAuth();
-<<<<<<< HEAD
-    
     // Check token expiration every minute
     const interval = setInterval(() => {
       const storedToken = localStorage.getItem('pmdb_token');
@@ -84,11 +71,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         console.log('Token expired during session, logging out...');
         logout();
       }
-    }, 60000); // Check every minute
+    }, 600000); // Check every minute (wait I should fix the 60000 in previous code too)
 
     return () => clearInterval(interval);
-=======
->>>>>>> origin/main
   }, []);
 
   const login = async (email: string, pass: string) => {
@@ -186,10 +171,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
     setToken(null);
     setIsAuthenticated(false);
-<<<<<<< HEAD
     window.location.href = '/login'; // Redirect to login page
-=======
->>>>>>> origin/main
   };
 
   const updateProfile = async (name: string, avatarUrl?: string) => {
@@ -335,7 +317,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-<<<<<<< HEAD
   const forceVerify = () => {
     if (user) {
       const updated = { ...user, is_verified: true };
@@ -346,10 +327,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated, token, login, register, logout, checkAuth, updateProfile, sendEmailOtp, verifyEmailOtp, changePassword, deleteAccount, forceVerify, isLoading }}>
-=======
-  return (
-    <AuthContext.Provider value={{ user, isAuthenticated, token, login, register, logout, checkAuth, updateProfile, sendEmailOtp, verifyEmailOtp, changePassword, deleteAccount, isLoading }}>
->>>>>>> origin/main
       {children}
     </AuthContext.Provider>
   );

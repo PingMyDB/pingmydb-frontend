@@ -6,10 +6,7 @@ import { motion } from 'framer-motion';
 /* Added missing Github import */
 import { Database, Mail, Lock, Loader2, ArrowLeft, Github, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-<<<<<<< HEAD
 import { API_BASE_URL } from '../src/config';
-=======
->>>>>>> origin/main
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -68,10 +65,7 @@ const LoginPage: React.FC = () => {
                   className="flex h-12 w-full rounded-xl border border-input bg-background pl-10 pr-4 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-<<<<<<< HEAD
                   autoComplete="email"
-=======
->>>>>>> origin/main
                 />
               </div>
             </div>
@@ -96,10 +90,7 @@ const LoginPage: React.FC = () => {
                   className="flex h-12 w-full rounded-xl border border-input bg-background pl-10 pr-10 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-<<<<<<< HEAD
                   autoComplete="current-password"
-=======
->>>>>>> origin/main
                 />
                 <button
                   type="button"
@@ -130,7 +121,6 @@ const LoginPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-<<<<<<< HEAD
             <button 
               type="button"
               onClick={() => window.location.href = `${API_BASE_URL}/auth/github`}
@@ -143,12 +133,6 @@ const LoginPage: React.FC = () => {
               onClick={() => window.location.href = `${API_BASE_URL}/auth/google`}
               className="inline-flex items-center justify-center rounded-xl text-sm font-medium border h-10 px-4 py-2 hover:bg-accent transition-colors gap-2"
             >
-=======
-            <button className="inline-flex items-center justify-center rounded-xl text-sm font-medium border h-10 px-4 py-2 hover:bg-accent transition-colors gap-2">
-              <Github size={18} /> GitHub
-            </button>
-            <button className="inline-flex items-center justify-center rounded-xl text-sm font-medium border h-10 px-4 py-2 hover:bg-accent transition-colors gap-2">
->>>>>>> origin/main
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                 <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />

@@ -18,7 +18,6 @@ import StatusPage from './pages/StatusPage';
 import StatusSettingsPage from './pages/StatusSettingsPage';
 import ApiKeyPage from './pages/ApiKeyPage';
 import IncidentPage from './pages/IncidentPage';
-<<<<<<< HEAD
 import TeamPage from './pages/TeamPage';
 import AuthCallback from './pages/AuthCallback';
 import DashboardLayout from './layouts/DashboardLayout';
@@ -27,11 +26,6 @@ import ScrollToTop from './components/ScrollToTop';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
-=======
-import DashboardLayout from './layouts/DashboardLayout';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import ScrollToTop from './components/ScrollToTop';
->>>>>>> origin/main
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -65,15 +59,10 @@ const AppContent: React.FC = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/status/:slug" element={<StatusPage />} />
-<<<<<<< HEAD
             <Route path="/auth-callback" element={<AuthCallback />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
-
-=======
-    
->>>>>>> origin/main
             {/* Protected Dashboard Routes */}
             <Route
               path="/dashboard"
@@ -92,10 +81,7 @@ const AppContent: React.FC = () => {
               <Route path="status" element={<StatusSettingsPage />} />
               <Route path="incidents" element={<IncidentPage />} />
               <Route path="api-keys" element={<ApiKeyPage />} />
-<<<<<<< HEAD
               <Route path="team" element={<TeamPage />} />
-=======
->>>>>>> origin/main
 
               {/* Admin Routes */}
               <Route path="admin" element={<AdminDashboard />} />

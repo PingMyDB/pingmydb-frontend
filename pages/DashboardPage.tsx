@@ -26,10 +26,7 @@ import { Line } from 'react-chartjs-2';
 import { useMonitorStore } from '../store/monitorStore';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
 import { API_BASE_URL } from '../src/config';
-=======
->>>>>>> origin/main
 
 ChartJS.register(
   CategoryScale,
@@ -69,11 +66,7 @@ const StatCard: React.FC<{
   </motion.div>
 );
 
-<<<<<<< HEAD
 const UptimeChart: React.FC<{ activeWorkspace: number | null }> = ({ activeWorkspace }) => {
-=======
-const UptimeChart: React.FC = () => {
->>>>>>> origin/main
   const { fetchStatsHistory } = useMonitorStore();
   const [history, setHistory] = React.useState<{ hour: string; uptime_pct: number; avg_latency: number }[]>([]);
   const [view, setView] = React.useState<'uptime' | 'latency'>('uptime');
@@ -81,11 +74,7 @@ const UptimeChart: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-<<<<<<< HEAD
         const data = await fetchStatsHistory(activeWorkspace || undefined);
-=======
-        const data = await fetchStatsHistory();
->>>>>>> origin/main
         setHistory(data);
       } catch (err) {
         console.error('Failed to load chart data:', err);
@@ -94,11 +83,7 @@ const UptimeChart: React.FC = () => {
     loadData();
     const timer = setInterval(loadData, 60000); // Update every minute
     return () => clearInterval(timer);
-<<<<<<< HEAD
   }, [fetchStatsHistory, activeWorkspace]);
-=======
-  }, [fetchStatsHistory]);
->>>>>>> origin/main
 
   const chartLabels = history.map(h => {
     const d = new Date(h.hour);
@@ -213,7 +198,6 @@ const UptimeChart: React.FC = () => {
 const DashboardPage: React.FC = () => {
   const { monitors, fetchMonitors } = useMonitorStore();
   const { user } = useAuth();
-<<<<<<< HEAD
   const [joinedTeams, setJoinedTeams] = React.useState<any[]>([]);
   const [activeWorkspace, setActiveWorkspace] = React.useState<number | null>(null); // null = user's own workspace
 
@@ -232,16 +216,10 @@ const DashboardPage: React.FC = () => {
       }
     };
     fetchTeams();
-=======
-
-  useEffect(() => {
-    fetchMonitors();
->>>>>>> origin/main
     const timer = setInterval(fetchMonitors, 15000);
     return () => clearInterval(timer);
   }, [fetchMonitors]);
 
-<<<<<<< HEAD
   // Filter monitors based on active workspace
   const workspaceMonitors = useMemo(() => {
     if (activeWorkspace === null) {
@@ -270,30 +248,11 @@ const DashboardPage: React.FC = () => {
 
     return [
       { title: 'Active Monitors', value: online, subValue: `out of ${workspaceMonitors.length} total`, icon: Activity, color: 'bg-primary/10 text-primary' },
-=======
-  const stats = useMemo(() => {
-    const online = monitors.filter(m => m.status === 'online').length;
-    const offline = monitors.filter(m => m.status === 'offline').length;
-    const avgLatency = monitors.length 
-      ? Math.round(monitors.reduce((acc, m) => acc + (m.avg_latency || 0), 0) / monitors.length) 
-      : 0;
-    const lastLatency = monitors.length
-      ? Math.round(monitors.reduce((acc, m) => acc + (m.latency || 0), 0) / monitors.length)
-      : 0;
-    const uptimePct = monitors.length ? Math.round((online / monitors.length) * 100 * 10) / 10 : 100;
-
-    return [
-      { title: 'Active Monitors', value: online, subValue: `out of ${monitors.length} total`, icon: Activity, color: 'bg-primary/10 text-primary' },
->>>>>>> origin/main
       { title: 'Uptime', value: `${uptimePct}%`, subValue: 'Current snapshot', icon: CheckCircle2, color: 'bg-green-500/10 text-green-500' },
       { title: 'Down', value: offline, subValue: 'Monitors currently offline', icon: AlertCircle, color: 'bg-destructive/10 text-destructive' },
       { title: 'Avg Latency', value: `${avgLatency}ms`, subValue: `Last: ${lastLatency}ms`, icon: Clock, color: 'bg-yellow-500/10 text-yellow-500' },
     ];
-<<<<<<< HEAD
   }, [workspaceMonitors]);
-=======
-  }, [monitors]);
->>>>>>> origin/main
 
   const getTypeIcon = (type: string) => {
     if (type === 'postgres') return '🐘';
@@ -309,7 +268,6 @@ const DashboardPage: React.FC = () => {
           <h1 className="text-3xl font-extrabold tracking-tight">Welcome, {user?.name}</h1>
           <p className="text-muted-foreground">Here's what's happening with your databases today.</p>
         </div>
-<<<<<<< HEAD
         <div className="flex items-center gap-3 flex-wrap">
           {/* Workspace Tabs */}
           {joinedTeams.length > 0 && (
@@ -342,9 +300,6 @@ const DashboardPage: React.FC = () => {
               ))}
             </>
           )}
-=======
-        <div className="flex items-center gap-3">
->>>>>>> origin/main
           <Link 
             to="/dashboard/monitors" 
             className="inline-flex items-center justify-center rounded-lg border bg-card px-4 py-2 text-sm font-semibold hover:bg-accent transition-colors"
@@ -373,22 +328,14 @@ const DashboardPage: React.FC = () => {
               <TrendingUp size={14} className="text-green-500" /> Live
             </div>
           </div>
-<<<<<<< HEAD
           <UptimeChart activeWorkspace={activeWorkspace} />
-=======
-          <UptimeChart />
->>>>>>> origin/main
         </div>
 
         {/* Active Monitors */}
         <div className="bg-card border rounded-xl p-6 shadow-sm">
           <h3 className="text-lg font-bold mb-6">Active Monitors</h3>
           <div className="space-y-4">
-<<<<<<< HEAD
             {workspaceMonitors.slice(0, 5).map((monitor) => (
-=======
-            {monitors.slice(0, 5).map((monitor) => (
->>>>>>> origin/main
               <div key={monitor.id} className="flex items-center justify-between group">
                 <div className="flex items-center gap-3 overflow-hidden">
                   <div className={`shrink-0 w-2 h-2 rounded-full ${monitor.status === 'online' ? 'bg-green-500 animate-pulse' : monitor.status === 'offline' ? 'bg-red-500' : 'bg-yellow-500'}`} />

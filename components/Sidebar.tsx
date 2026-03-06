@@ -22,11 +22,7 @@ import { useAuth } from '../context/AuthContext';
 const navItems = [
   { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
   { icon: Activity, label: 'Monitors', path: '/dashboard/monitors' },
-<<<<<<< HEAD
   { icon: Users, label: 'Team', path: '/dashboard/team' },
-=======
-  { icon: Users, label: 'Team', path: '/dashboard/settings?tab=team' },
->>>>>>> origin/main
   { icon: Globe, label: 'Status Page', path: '/dashboard/status' },
   { icon: AlertTriangle, label: 'Incident Manager', path: '/dashboard/incidents' },
   { icon: Code2, label: 'Developer API', path: '/dashboard/api-keys' },

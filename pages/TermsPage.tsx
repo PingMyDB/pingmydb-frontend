@@ -1,11 +1,7 @@
 import PublicNavbar from '../components/PublicNavbar';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-<<<<<<< HEAD
 import { Shield, Scale, FileText, CheckCircle2, Github } from 'lucide-react';
-=======
-import { Shield, Scale, FileText, CheckCircle2 } from 'lucide-react';
->>>>>>> origin/main
 
 const TermsPage: React.FC = () => {
     return (
@@ -124,18 +120,12 @@ const TermsPage: React.FC = () => {
                         <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center text-background font-black">P</div>
                         <p>© 2026 PingMyDb Systems Inc.</p>
                     </div>
-<<<<<<< HEAD
                     <div className="flex gap-8 items-center">
                         <Link to="/terms" className="text-foreground font-black tracking-tight">Terms</Link>
                         <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
                         <a href="https://github.com/orgs/PingMyDB/repositories" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
                           <Github size={18} />
                         </a>
-=======
-                    <div className="flex gap-8">
-                        <Link to="/terms" className="text-foreground font-black tracking-tight">Terms</Link>
-                        <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
->>>>>>> origin/main
                     </div>
                 </div>
             </footer>

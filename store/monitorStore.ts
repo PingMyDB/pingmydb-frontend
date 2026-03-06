@@ -38,11 +38,7 @@ interface MonitorStore {
   fetchAlerts: (id: number) => Promise<Alert[]>;
   allAlerts: Alert[];
   fetchAllAlerts: () => Promise<void>;
-<<<<<<< HEAD
   fetchStatsHistory: (owner_id?: number) => Promise<{ hour: string; uptime_pct: number; avg_latency: number }[]>;
-=======
-  fetchStatsHistory: () => Promise<{ hour: string; uptime_pct: number; avg_latency: number }[]>;
->>>>>>> origin/main
   testQuery: (data: any) => Promise<any>;
 }
 
@@ -155,16 +151,11 @@ export const useMonitorStore = create<MonitorStore>((set) => ({
     }
   },
 
-<<<<<<< HEAD
   fetchStatsHistory: async (owner_id?: number) => {
     const url = owner_id 
       ? `${API_BASE}/stats/history?owner_id=${owner_id}`
       : `${API_BASE}/stats/history`;
     const res = await fetch(url, { headers: headers() });
-=======
-  fetchStatsHistory: async () => {
-    const res = await fetch(`${API_BASE}/stats/history`, { headers: headers() });
->>>>>>> origin/main
     if (!res.ok) throw new Error('Failed to fetch stats history');
     return res.json();
   },

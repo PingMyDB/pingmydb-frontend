@@ -32,10 +32,6 @@ import { API_BASE_URL } from '../src/config';
 
 // ─── All interval options ───────────────────────────────────
 const ALL_INTERVALS = [
-<<<<<<< HEAD
-=======
-  { label: '1 min',   ms: 60000 },
->>>>>>> origin/main
   { label: '5 min',   ms: 300000 },
   { label: '10 min',  ms: 600000 },
   { label: '15 min',  ms: 900000 },
@@ -49,17 +45,10 @@ const ALL_INTERVALS = [
 ];
 
 const PLAN_MIN_INTERVAL_MS: Record<string, number> = {
-<<<<<<< HEAD
   free: 43200000,      // 12 hours
   student: 3600000,    // 1 hour
   pro: 3600000,        // 1 hour
   enterprise: 300000,  // 5 min
-=======
-  free: 3600000,       // 1 hour
-  student: 600000,     // 10 min
-  pro: 600000,         // 10 min
-  enterprise: 60000,   // 1 min
->>>>>>> origin/main
 };
 
 const MonitorsPage: React.FC = () => {
@@ -70,10 +59,7 @@ const MonitorsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [joinedTeams, setJoinedTeams] = useState<any[]>([]);
   const [targetOwner, setTargetOwner] = useState<any>(null);
-<<<<<<< HEAD
   const [activeWorkspace, setActiveWorkspace] = useState<number | null>(null); // null = user's own workspace
-=======
->>>>>>> origin/main
 
   // Verify state
   const [isVerifying, setIsVerifying] = useState(false);
@@ -123,7 +109,6 @@ const MonitorsPage: React.FC = () => {
     return () => clearInterval(timer);
   }, [fetchMonitors]);
 
-<<<<<<< HEAD
   // Filter monitors based on active workspace
   const getActiveWorkspaceMonitors = () => {
     if (activeWorkspace === null) {
@@ -142,14 +127,10 @@ const MonitorsPage: React.FC = () => {
   const workspaceMonitors = getActiveWorkspaceMonitors();
 
   const filteredMonitors = workspaceMonitors
-=======
-  const filteredAndSortedMonitors = monitors
->>>>>>> origin/main
     .filter(m =>
       m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       m.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
       m.provider.toLowerCase().includes(searchTerm.toLowerCase())
-<<<<<<< HEAD
     );
 
   const sortedMonitors = filteredMonitors.sort((a, b) => {
@@ -191,29 +172,6 @@ const MonitorsPage: React.FC = () => {
     const role = getUserRoleForOwner(monitor.owner_email);
     return role === 'admin';
   };
-=======
-    )
-    .sort((a, b) => {
-      let comparison = 0;
-      switch (sortBy) {
-        case 'name':
-          comparison = a.name.localeCompare(b.name);
-          break;
-        case 'status':
-          comparison = a.status.localeCompare(b.status);
-          break;
-        case 'latency':
-          comparison = (a.avg_latency || 999999) - (b.avg_latency || 999999);
-          break;
-        case 'last_ping':
-          const timeA = a.last_ping_at ? new Date(a.last_ping_at).getTime() : 0;
-          const timeB = b.last_ping_at ? new Date(b.last_ping_at).getTime() : 0;
-          comparison = timeA - timeB;
-          break;
-      }
-      return sortOrder === 'asc' ? comparison : -comparison;
-    });
->>>>>>> origin/main
 
   const handleVerify = async () => {
     if (!formData.uri.trim()) {
@@ -400,7 +358,6 @@ const MonitorsPage: React.FC = () => {
         </button>
       </div>
 
-<<<<<<< HEAD
       {/* Workspace Tabs */}
       {joinedTeams.length > 0 && (
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
@@ -433,8 +390,6 @@ const MonitorsPage: React.FC = () => {
         </div>
       )}
 
-=======
->>>>>>> origin/main
       <div className="flex flex-col md:flex-row items-center gap-4">
         <div className="flex-1 flex items-center gap-4 bg-card border rounded-xl p-2 px-4 shadow-sm w-full">
           <Search className="text-muted-foreground" size={18} />
@@ -491,11 +446,7 @@ const MonitorsPage: React.FC = () => {
                     <span className="text-sm text-muted-foreground">Loading monitors...</span>
                   </td>
                 </tr>
-<<<<<<< HEAD
               ) : sortedMonitors.length === 0 ? (
-=======
-              ) : filteredAndSortedMonitors.length === 0 ? (
->>>>>>> origin/main
                 <tr>
                   <td colSpan={7} className="px-6 py-20 text-center">
                     <div className="max-w-xs mx-auto">
@@ -503,7 +454,6 @@ const MonitorsPage: React.FC = () => {
                         <Activity size={24} className="text-muted-foreground" />
                       </div>
                       <h3 className="font-bold text-lg">No monitors found</h3>
-<<<<<<< HEAD
                       <p className="text-sm text-muted-foreground mt-2">
                         {activeWorkspace === null 
                           ? 'Add your first database monitor to get started.'
@@ -514,17 +464,10 @@ const MonitorsPage: React.FC = () => {
                           Create Monitor
                         </button>
                       )}
-=======
-                      <p className="text-sm text-muted-foreground mt-2">Add your first database monitor to get started.</p>
-                      <button onClick={openModal} className="mt-6 text-sm font-bold text-primary hover:underline">
-                        Create Monitor
-                      </button>
->>>>>>> origin/main
                     </div>
                     </td>
                 </tr>
               ) : (
-<<<<<<< HEAD
                 <>
                   {sortedMonitors.map((m) => {
                     const isOwnMonitor = m.owner_email === user?.email;
@@ -607,71 +550,6 @@ const MonitorsPage: React.FC = () => {
                     );
                   })}
                 </>
-=======
-                filteredAndSortedMonitors.map((m) => (
-                  <tr key={m.id} className="hover:bg-accent/30 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2.5 h-2.5 rounded-full ${getStatusColor(m.status)}`} />
-                        <span className={`text-xs font-bold uppercase ${getStatusText(m.status)}`}>{m.status}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{getTypeIcon(m.type)}</span>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-bold">{m.name}</span>
-                            {m.owner_email !== user?.email && (
-                              <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-black uppercase tracking-tighter">Team</span>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground">{m.type} {m.owner_email !== user?.email && `• ${m.owner_name}`}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-accent text-accent-foreground text-xs font-medium border border-border capitalize">
-                        {m.provider}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-xs font-medium text-muted-foreground">
-                        Every {formatIntervalMs(m.interval_ms)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className={`text-sm font-mono font-bold ${m.avg_latency && m.avg_latency > 500 ? 'text-yellow-600' : 'text-primary'}`}>
-                          {m.avg_latency ? `${m.avg_latency}ms` : '—'}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground">Last: {m.latency ? `${m.latency}ms` : '—'}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-xs text-muted-foreground font-medium">
-                      {m.last_ping_at ? new Date(m.last_ping_at).toLocaleTimeString() : 'Never'}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button 
-                          onClick={() => handlePause(m.id)} 
-                          title={m.is_paused ? "Resume Monitor" : "Pause Monitor"} 
-                          className={`p-2 rounded-lg transition-colors ${m.is_paused ? 'text-green-500 hover:bg-green-500/10' : 'text-slate-500 hover:bg-slate-500/10'}`}
-                        >
-                          {m.is_paused ? <Play size={16} /> : <Pause size={16} />}
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(m.id)} 
-                          title="Delete Monitor"
-                          className="p-2 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
->>>>>>> origin/main
               )}
             </tbody>
           </table>
