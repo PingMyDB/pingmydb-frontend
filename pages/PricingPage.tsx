@@ -759,7 +759,7 @@ const PricingPage: React.FC = () => {
             <Link to="/" className="flex items-center gap-2 cursor-pointer">
               <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg shadow-lg shadow-primary/20" alt="Logo" />
               <span className="text-xl font-bold tracking-tight">
-                <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+                <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
               </span>
             </Link>
             
@@ -800,7 +800,7 @@ const PricingPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg" alt="Logo" />
             <span className="text-lg font-black tracking-widest uppercase">
-              <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+              <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
             </span>
           </div>
           <div className="flex items-center gap-4">

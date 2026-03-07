@@ -138,7 +138,7 @@ const DocsPage: React.FC = () => {
               <Link to="/" className="flex items-center gap-2.5 group">
                 <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg group-hover:scale-105 transition-transform" alt="Logo" />
                 <span className="font-bold text-base tracking-tight hidden sm:block">
-                  <span className="text-primary">Ping</span><span className="text-white">MyDb</span> <span className="text-primary">Docs</span>
+                  <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span> <span className="text-primary">Docs</span>
                 </span>
               </Link>
             )}
@@ -389,7 +389,7 @@ const DocsPage: React.FC = () => {
         <div className="py-12 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-40 text-[11px] font-bold uppercase tracking-widest border-t border-border/20">
            <div className="flex items-center gap-3">
               <img src="/favicon-96x96.png" className="w-5 h-5 rounded-md" alt="Logo" />
-              <span>© 2026 <span className="text-primary">Ping</span><span className="text-white">MyDb</span> Systems Inc.</span>
+              <span>© 2026 <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span> Systems Inc.</span>
            </div>
            <div className="flex items-center gap-6">
               <Link to="/privacy" className="hover:text-primary transition-colors">Privacy</Link>

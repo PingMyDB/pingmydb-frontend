@@ -125,7 +125,7 @@ const PrivacyPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 text-sm text-muted-foreground font-medium">
           <div className="flex items-center gap-4">
             <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg" alt="Logo" />
-            <p>© 2026 <span className="text-primary">Ping</span><span className="text-white">MyDb</span> Systems Inc.</p>
+            <p>© 2026 <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span> Systems Inc.</p>
           </div>
           <div className="flex gap-8 items-center">
             <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>

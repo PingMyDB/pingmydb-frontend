@@ -106,7 +106,7 @@ const StatusPage: React.FC = () => {
                     <div className="flex items-center gap-2">
                         <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg" alt="Logo" />
                         <span className="font-bold text-xl tracking-tighter">
-                            <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+                            <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
                         </span>
                     </div>
                     
@@ -273,7 +273,7 @@ const StatusPage: React.FC = () => {
                     </p>
                     <div className="flex items-center justify-center gap-6 pt-4">
                         <Link to="/" className="text-xs font-black uppercase tracking-widest hover:opacity-80 transition-opacity">
-                            Created with <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+                            Created with <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
                         </Link>
                         <span className="w-1 h-1 bg-muted-foreground/30 rounded-full" />
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-bold">

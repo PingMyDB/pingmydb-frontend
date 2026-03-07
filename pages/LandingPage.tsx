@@ -429,7 +429,7 @@ const LandingPage: React.FC = () => {
             <div className="flex items-center gap-2 mb-4 cursor-pointer" onClick={() => navigate('/')}>
               <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg" alt="PingMyDb Logo" />
               <span className="text-xl font-black tracking-tight">
-                <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+                <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
               </span>
             </div>
             <p className="text-muted-foreground text-sm max-w-sm leading-relaxed">

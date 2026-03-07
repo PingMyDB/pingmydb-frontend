@@ -63,7 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <div className="p-4 pt-5 flex items-center gap-2 border-b lg:border-none">
             <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg shadow-lg shadow-primary/20" alt="PingMyDb Logo" />
             <span className="text-xl font-bold tracking-tight">
-              <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+              <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
             </span>
           </div>
 

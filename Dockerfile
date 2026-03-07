@@ -1,5 +1,5 @@
 # Frontend Dockerfile for PingMyDB
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -14,6 +14,8 @@ RUN npm ci
 COPY . .
 
 # Build the application
+ARG VITE_API_URL=https://pingmydb-backend-xozimayiwa-uc.a.run.app
+ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build
 
 # Production stage
