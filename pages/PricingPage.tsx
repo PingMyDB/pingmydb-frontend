@@ -64,36 +64,36 @@ const PricingCard = ({
     whileHover={{ y: -8, transition: { duration: 0.2 } }}
     className={`relative flex flex-col p-8 rounded-[2.5rem] border transition-all duration-500 overflow-hidden group ${
       isCurrent
-        ? 'bg-primary shadow-2xl shadow-primary/20 border-white/20'
+        ? 'bg-card/60 backdrop-blur-2xl border-primary ring-1 ring-primary/20 shadow-2xl shadow-primary/10'
         : 'bg-card/40 backdrop-blur-xl border-border hover:border-primary/50 shadow-xl'
     }`}
   >
     {/* Background Glows for Cards */}
-    <div className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[100px] transition-opacity duration-700 opacity-20 group-hover:opacity-40 ${isCurrent ? 'bg-white' : 'bg-primary'}`} />
+    <div className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[100px] transition-opacity duration-700 ${isCurrent ? 'bg-primary/20 opacity-40' : 'bg-primary/10 opacity-20 group-hover:opacity-40'}`} />
     
     {isCurrent && (
-      <div className="absolute top-6 right-8 bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-white/10">
+      <div className="absolute top-6 right-8 bg-primary/20 backdrop-blur-md text-primary text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-primary/20 animate-pulse">
         Current Plan
       </div>
     )}
 
-    <div className="relative z-10">
+    <div className="relative z-10 h-full flex flex-col">
       <div className="mb-8">
-        <h3 className={`text-2xl font-black mb-2 flex items-center gap-2 ${isCurrent ? 'text-white' : 'text-foreground'}`}>
+        <h3 className={`text-2xl font-black mb-2 flex items-center gap-2 ${isCurrent ? 'text-primary' : 'text-foreground'}`}>
           {name}
-          {isCurrent && <Sparkles size={18} className="text-white/80" />}
+          {isCurrent && <Sparkles size={18} className="text-primary/80" />}
         </h3>
-        <p className={`text-sm leading-relaxed ${isCurrent ? 'text-white/70' : 'text-muted-foreground'}`}>{description}</p>
+        <p className={`text-sm leading-relaxed ${isCurrent ? 'text-muted-foreground' : 'text-muted-foreground'}`}>{description}</p>
       </div>
 
       <div className="mb-8 items-baseline gap-2">
         <div className="flex flex-col">
           {originalPrice && (
-            <span className={`text-sm line-through font-medium mb-1 ${isCurrent ? 'text-white/40' : 'text-muted-foreground/50'}`}>{originalPrice}</span>
+            <span className={`text-sm line-through font-medium mb-1 ${isCurrent ? 'text-muted-foreground/50' : 'text-muted-foreground/50'}`}>{originalPrice}</span>
           )}
           <div className="flex items-baseline gap-1">
-            <span className={`text-5xl font-black tracking-tight ${isCurrent ? 'text-white' : 'text-foreground'}`}>{price}</span>
-            {price !== '$0' && <span className={`font-semibold text-sm ${isCurrent ? 'text-white/60' : 'text-muted-foreground'}`}>/mo</span>}
+            <span className={`text-5xl font-black tracking-tight ${isCurrent ? 'text-foreground' : 'text-foreground'}`}>{price}</span>
+            {price !== '$0' && <span className={`font-semibold text-sm ${isCurrent ? 'text-muted-foreground' : 'text-muted-foreground'}`}>/mo</span>}
           </div>
         </div>
       </div>
@@ -101,16 +101,16 @@ const PricingCard = ({
       {/* Usage Stats (Dashboard-only enhancement) */}
       {isCurrent && usageText !== undefined && (
         <div className="mb-8 space-y-3">
-          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-white/80">
+          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-primary/80">
             <span>Monitor Capacity</span>
             <span>{usageText}</span>
           </div>
-          <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden border border-white/5 p-[1px]">
+          <div className="h-2 w-full bg-primary/10 rounded-full overflow-hidden border border-primary/5 p-[1px]">
             <motion.div 
               initial={{ width: 0 }}
               animate={{ width: `${usagePercent}%` }}
               transition={{ duration: 1, ease: "circOut" }}
-              className="h-full bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+              className="h-full bg-primary rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"
             />
           </div>
         </div>
@@ -119,26 +119,36 @@ const PricingCard = ({
       <ul className="space-y-4 mb-10 flex-1">
         {features.map((feature, i) => (
           <li key={i} className="flex items-start gap-3 text-sm">
-            <div className={`shrink-0 mt-1 p-0.5 rounded-full ${isCurrent ? 'bg-white/20' : 'bg-primary/10'}`}>
-              <CheckCircle2 size={14} className={isCurrent ? 'text-white' : 'text-primary'} />
+            <div className={`shrink-0 mt-1 p-0.5 rounded-full ${isCurrent ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-primary'}`}>
+              <CheckCircle2 size={14} />
             </div>
-            <span className={`font-semibold ${isCurrent ? 'text-white' : 'text-foreground/80'}`}>{feature}</span>
+            <span className={`font-semibold text-foreground/80`}>{feature}</span>
           </li>
         ))}
       </ul>
 
-      <button 
-        disabled={isCurrent || (ctaText === 'Processing...')}
-        onClick={onClick}
-        className={`w-full py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 group/btn ${
-          isCurrent || (ctaText === 'Processing...')
-            ? 'bg-white text-primary cursor-default opacity-90'
-            : 'bg-primary text-primary-foreground shadow-2xl shadow-primary/20 hover:scale-[1.02] hover:shadow-primary/40 active:scale-95'
-        }`}
-      >
-        {ctaText}
-        {!isCurrent && ctaText !== 'Processing...' && <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />}
-      </button>
+      {!isCurrent && (
+        <button 
+          disabled={ctaText === 'Processing...'}
+          onClick={onClick}
+          className={`w-full py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 group/btn ${
+            ctaText === 'Processing...'
+              ? 'bg-muted text-muted-foreground cursor-default'
+              : 'bg-primary text-primary-foreground shadow-2xl shadow-primary/20 hover:scale-[1.02] hover:shadow-primary/40 active:scale-95'
+          }`}
+        >
+          {ctaText}
+          {ctaText !== 'Processing...' && <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />}
+        </button>
+      )}
+
+      {isCurrent && (
+        <div className="mt-auto py-4 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-xl text-primary text-xs font-bold ring-1 ring-primary/20">
+            <ShieldCheck size={14} /> Active Subscription
+          </div>
+        </div>
+      )}
     </div>
   </motion.div>
 );
@@ -343,7 +353,7 @@ const PricingPage: React.FC = () => {
                 name: user.name,
                 email: user.email,
             },
-            theme: { color: "#3b82f6" },
+            theme: { color: "#10b981" },
             modal: {
                 ondismiss: function() {
                     setIsProcessing(null);
@@ -661,7 +671,7 @@ const PricingPage: React.FC = () => {
                 features={plan.features}
                 isPopular={plan.isPopular}
                 ctaText={isProcessing === plan.id ? 'Processing...' : ctaText}
-                isCurrent={isCurrentPlan && !showAllPlans} 
+                isCurrent={isCurrentPlan} 
                 usagePercent={usagePercent}
                 usageText={usageText}
                 onClick={user && isCurrentPlan ? undefined : () => handleUpgrade(plan.id, plan.priceValue)}
@@ -742,15 +752,15 @@ const PricingPage: React.FC = () => {
     <div className="min-h-screen bg-[#fafafa] dark:bg-[#050505] text-foreground selection:bg-primary/20 transition-colors duration-300">
        <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-40">
          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
-         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
+         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-primary/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
        </div>
        <nav className="fixed top-0 w-full z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2 cursor-pointer">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
-                <Database size={20} />
-              </div>
-              <span className="text-xl font-bold tracking-tight">PingMyDb</span>
+              <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg shadow-lg shadow-primary/20" alt="Logo" />
+              <span className="text-xl font-bold tracking-tight">
+                <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+              </span>
             </Link>
             
             <div className="hidden md:flex items-center gap-8">
@@ -788,10 +798,10 @@ const PricingPage: React.FC = () => {
        <footer className="border-t border-border py-20 text-center bg-muted/20">
         <div className="flex flex-col items-center gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
-              <Database size={18} />
-            </div>
-            <span className="text-lg font-black tracking-widest uppercase">PingMyDb</span>
+            <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg" alt="Logo" />
+            <span className="text-lg font-black tracking-widest uppercase">
+              <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+            </span>
           </div>
           <div className="flex items-center gap-4">
              <a href="https://github.com/orgs/PingMyDB/repositories" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg border border-border bg-card hover:bg-accent transition-all text-muted-foreground hover:text-primary">

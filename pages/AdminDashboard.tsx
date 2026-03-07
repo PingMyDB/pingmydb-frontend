@@ -62,7 +62,11 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const headers = { 'token': localStorage.getItem('pmdb_token') || '' };
+        const adminSecret = 'fallback_dev_secret_123'; // Matches backend default
+        const headers = { 
+          'token': localStorage.getItem('pmdb_token') || '',
+          'X-Admin-Secret': adminSecret
+        };
         const [statsRes, healthRes, errorsRes] = await Promise.all([
           fetch(`${API_BASE_URL}/api/admin/stats`, { headers }),
           fetch(`${API_BASE_URL}/api/admin/system/health`, { headers }),

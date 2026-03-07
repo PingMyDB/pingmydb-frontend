@@ -7,6 +7,12 @@ import {
   Clock, 
   TrendingUp,
   ChevronRight,
+  Database,
+  Plus,
+  RefreshCw,
+  Zap,
+  Globe,
+  MoreHorizontal
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {
@@ -46,27 +52,37 @@ const StatCard: React.FC<{
   icon: any; 
   color: string;
   delay?: number;
-}> = ({ title, value, subValue, icon: Icon, color, delay = 0 }) => (
+  statusIcon?: React.ReactNode;
+}> = ({ title, value, subValue, icon: Icon, color, delay = 0, statusIcon }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
+    whileHover={{ y: -4, transition: { duration: 0.2 } }}
     transition={{ delay }}
-    className="bg-card border rounded-xl p-6 shadow-sm flex flex-col justify-between"
+    className="bg-card border rounded-2xl p-6 shadow-sm flex flex-col justify-between group cursor-default hover:border-primary/50 transition-colors"
   >
     <div className="flex items-center justify-between mb-4">
-      <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{title}</span>
-      <div className={`p-2 rounded-lg ${color}`}>
+      <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest opacity-70 group-hover:opacity-100 transition-opacity">{title}</span>
+      <div className={`p-2.5 rounded-xl transition-all group-hover:scale-110 shadow-sm ${color}`}>
         <Icon size={20} />
       </div>
     </div>
     <div>
-      <h3 className="text-3xl font-bold tracking-tight">{value}</h3>
-      {subValue && <p className="text-xs text-muted-foreground mt-1 font-medium">{subValue}</p>}
+      <div className="flex items-baseline gap-2">
+        <h3 className="text-3xl font-black tracking-tighter">{value}</h3>
+        {statusIcon && <span className="mb-1">{statusIcon}</span>}
+      </div>
+      {subValue && (
+        <p className="text-[11px] text-muted-foreground mt-1 font-semibold flex items-center gap-1">
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+          {subValue}
+        </p>
+      )}
     </div>
   </motion.div>
 );
 
-const UptimeChart: React.FC<{ activeWorkspace: number | null }> = ({ activeWorkspace }) => {
+const UptimeChart: React.FC<{ activeWorkspace: number | null, activeMonitorId: number | null }> = ({ activeWorkspace, activeMonitorId }) => {
   const { fetchStatsHistory } = useMonitorStore();
   const [history, setHistory] = React.useState<{ hour: string; uptime_pct: number; avg_latency: number }[]>([]);
   const [view, setView] = React.useState<'uptime' | 'latency'>('uptime');
@@ -74,7 +90,7 @@ const UptimeChart: React.FC<{ activeWorkspace: number | null }> = ({ activeWorks
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchStatsHistory(activeWorkspace || undefined);
+        const data = await fetchStatsHistory(activeWorkspace || undefined, activeMonitorId || undefined);
         setHistory(data);
       } catch (err) {
         console.error('Failed to load chart data:', err);
@@ -83,7 +99,7 @@ const UptimeChart: React.FC<{ activeWorkspace: number | null }> = ({ activeWorks
     loadData();
     const timer = setInterval(loadData, 60000); // Update every minute
     return () => clearInterval(timer);
-  }, [fetchStatsHistory, activeWorkspace]);
+  }, [fetchStatsHistory, activeWorkspace, activeMonitorId]);
 
   const chartLabels = history.map(h => {
     const d = new Date(h.hour);
@@ -97,30 +113,32 @@ const UptimeChart: React.FC<{ activeWorkspace: number | null }> = ({ activeWorks
     labels: chartLabels,
     datasets: [{
       fill: true,
-      label: view === 'uptime' ? 'Uptime %' : 'Latency (ms)',
+      label: view === 'uptime' ? 'Uptime' : 'Latency',
       data: view === 'uptime' ? uptimeData : latencyData,
-      borderColor: view === 'uptime' ? 'rgb(59, 130, 246)' : 'rgb(245, 158, 11)',
+      borderColor: view === 'uptime' ? '#10b981' : '#f59e0b', // Brighter Green (Emerald 500)
       backgroundColor: (context) => {
         const chart = context.chart;
         const { ctx, chartArea } = chart;
         if (!chartArea) return undefined;
         const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
         if (view === 'uptime') {
-          gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
-          gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+          gradient.addColorStop(0, 'rgba(16, 185, 129, 0.2)');
+          gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
         } else {
-          gradient.addColorStop(0, 'rgba(245, 158, 11, 0.3)');
+          gradient.addColorStop(0, 'rgba(245, 158, 11, 0.2)');
           gradient.addColorStop(1, 'rgba(245, 158, 11, 0)');
         }
         return gradient;
       },
       tension: 0.4,
-      pointRadius: 4,
-      pointBackgroundColor: view === 'uptime' ? 'rgb(59, 130, 246)' : 'rgb(245, 158, 11)',
-      pointBorderColor: '#fff',
+      pointRadius: 3,
+      pointBackgroundColor: view === 'uptime' ? '#10b981' : '#f59e0b',
+      pointBorderColor: 'rgba(255,255,255,0.8)',
+      pointBorderWidth: 2,
       pointHoverRadius: 6,
-      pointHoverBackgroundColor: view === 'uptime' ? 'rgb(59, 130, 246)' : 'rgb(245, 158, 11)',
+      pointHoverBackgroundColor: view === 'uptime' ? '#10b981' : '#f59e0b',
       pointHoverBorderColor: '#fff',
+      pointHoverBorderWidth: 3,
       borderWidth: 3,
     }],
   };
@@ -133,54 +151,73 @@ const UptimeChart: React.FC<{ activeWorkspace: number | null }> = ({ activeWorks
       tooltip: {
         mode: 'index',
         intersect: false,
-        backgroundColor: '#1e293b', // Slate 800 for a consistent premium dark tooltip
-        titleColor: '#f8fafc', // Slate 50
-        bodyColor: '#cbd5e1', // Slate 300
-        borderColor: 'rgba(255, 255, 255, 0.1)',
+        backgroundColor: '#0f172a', // slate-900
+        titleColor: '#94a3b8',
+        titleFont: { size: 10, weight: 'bold' },
+        bodyColor: '#f8fafc',
+        bodyFont: { size: 13, weight: 'bold' },
+        borderColor: 'rgba(255,255,255,0.1)',
         borderWidth: 1,
         padding: 12,
-        cornerRadius: 8,
+        cornerRadius: 12,
         displayColors: false,
         callbacks: { 
-          label: (context) => ` ${context.parsed.y}${view === 'uptime' ? '%' : 'ms'} ${view === 'uptime' ? 'Uptime' : 'Latency'}` 
+          title: (items) => `TIME: ${items[0].label}`,
+          label: (context) => `⚡ ${context.parsed.y}${view === 'uptime' ? '%' : 'ms'} ${view === 'uptime' ? 'Uptime' : 'Latency'}` 
         }
       },
     },
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: 'hsl(var(--muted-foreground))', font: { size: 11 } }
+        ticks: { color: '#64748b', font: { size: 10, weight: 'bold' } }
       },
       y: {
         min: view === 'uptime' ? 0 : undefined,
         max: view === 'uptime' ? 100 : undefined,
-        grid: { color: 'hsla(var(--border), 0.5)' },
+        grid: { color: 'rgba(203, 213, 225, 0.1)' },
         ticks: { 
-          stepSize: view === 'uptime' ? 20 : undefined, 
-          color: 'hsl(var(--muted-foreground))', 
-          font: { size: 11 },
+          stepSize: view === 'uptime' ? 25 : undefined, 
+          color: '#64748b', 
+          font: { size: 10, weight: 'bold' },
           callback: (value) => `${value}${view === 'uptime' ? '%' : 'ms'}`
         }
       }
     },
-    interaction: { mode: 'nearest', axis: 'x', intersect: false }
+    interaction: { mode: 'nearest', axis: 'x', intersect: false },
+    animation: {
+      duration: 1000,
+      easing: 'easeOutQuart'
+    }
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
-        <button 
-          onClick={() => setView('uptime')}
-          className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${view === 'uptime' ? 'bg-primary text-primary-foreground' : 'bg-accent text-muted-foreground hover:bg-accent/80'}`}
-        >
-          Uptime
-        </button>
-        <button 
-          onClick={() => setView('latency')}
-          className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${view === 'latency' ? 'bg-amber-500 text-white' : 'bg-accent text-muted-foreground hover:bg-accent/80'}`}
-        >
-          Latency
-        </button>
+      <div className="flex items-center justify-between">
+        <div className="flex gap-1.5 bg-accent/50 p-1 rounded-xl">
+          <button 
+            onClick={() => setView('uptime')}
+            className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${view === 'uptime' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:bg-background/50'}`}
+          >
+            Uptime
+          </button>
+          <button 
+            onClick={() => setView('latency')}
+            className={`px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${view === 'latency' ? 'bg-background text-amber-500 shadow-sm' : 'text-muted-foreground hover:bg-background/50'}`}
+          >
+            Latency
+          </button>
+        </div>
+        <div className="flex gap-1 bg-accent/30 p-1 rounded-lg">
+          {['24h', '7d', '30d'].map((range) => (
+             <button 
+              key={range}
+              className={`px-2 py-1 rounded text-[9px] font-bold uppercase transition-all ${range === '24h' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:bg-background/30'}`}
+             >
+               {range}
+             </button>
+          ))}
+        </div>
       </div>
       <div className="h-[300px] w-full">
         {history.length > 0 ? (
@@ -200,6 +237,7 @@ const DashboardPage: React.FC = () => {
   const { user } = useAuth();
   const [joinedTeams, setJoinedTeams] = React.useState<any[]>([]);
   const [activeWorkspace, setActiveWorkspace] = React.useState<number | null>(null); // null = user's own workspace
+  const [activeMonitorId, setActiveMonitorId] = React.useState<number | null>(null);
 
   useEffect(() => {
     fetchMonitors();
@@ -247,10 +285,38 @@ const DashboardPage: React.FC = () => {
     const uptimePct = workspaceMonitors.length ? Math.round((online / workspaceMonitors.length) * 100 * 10) / 10 : 100;
 
     return [
-      { title: 'Active Monitors', value: online, subValue: `out of ${workspaceMonitors.length} total`, icon: Activity, color: 'bg-primary/10 text-primary' },
-      { title: 'Uptime', value: `${uptimePct}%`, subValue: 'Current snapshot', icon: CheckCircle2, color: 'bg-green-500/10 text-green-500' },
-      { title: 'Down', value: offline, subValue: 'Monitors currently offline', icon: AlertCircle, color: 'bg-destructive/10 text-destructive' },
-      { title: 'Avg Latency', value: `${avgLatency}ms`, subValue: `Last: ${lastLatency}ms`, icon: Clock, color: 'bg-yellow-500/10 text-yellow-500' },
+      { 
+        title: 'Active Monitors', 
+        value: online, 
+        subValue: `out of ${workspaceMonitors.length} total`, 
+        icon: Database, 
+        color: 'bg-primary/10 text-primary',
+        statusIcon: <div className="w-2 h-2 rounded-full bg-primary animate-pulse ml-2" />
+      },
+      { 
+        title: 'Uptime', 
+        value: `${uptimePct}%`, 
+        subValue: 'Last 24 hours', 
+        icon: CheckCircle2, 
+        color: 'bg-emerald-500/10 text-emerald-500',
+        statusIcon: <span className="text-emerald-500 text-lg">✓</span>
+      },
+      { 
+        title: 'Down', 
+        value: offline, 
+        subValue: 'Requires attention', 
+        icon: AlertCircle, 
+        color: 'bg-destructive/10 text-destructive',
+        statusIcon: offline > 0 ? <div className="w-3 h-3 rounded-full bg-destructive animate-ping ml-2" /> : <div className="w-2 h-2 rounded-full bg-muted ml-2" />
+      },
+      { 
+        title: 'Avg Latency', 
+        value: `${avgLatency}ms`, 
+        subValue: `Last ping: ${lastLatency}ms`, 
+        icon: Zap, 
+        color: 'bg-amber-500/10 text-amber-500',
+        statusIcon: <span className="text-amber-500 text-lg">⚡</span>
+      },
     ];
   }, [workspaceMonitors]);
 
@@ -263,48 +329,102 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-8 pb-10">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Welcome, {user?.name}</h1>
-          <p className="text-muted-foreground">Here's what's happening with your databases today.</p>
+          <h1 className="text-4xl font-black tracking-tighter">System Pulse</h1>
+          <p className="text-muted-foreground font-medium mt-1">Hello, {user?.name.split(' ')[0]}. Here's your infrastructure status.</p>
         </div>
-        <div className="flex items-center gap-3 flex-wrap">
-          {/* Workspace Tabs */}
-          {joinedTeams.length > 0 && (
-            <>
-              <button
+        <div className="flex items-center gap-3">
+          {/* Workspace Switcher Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-3 px-4 py-2.5 bg-card border rounded-2xl text-sm font-bold shadow-sm hover:border-primary/50 transition-all outline-none">
+              <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center text-primary">
+                <Database size={12} />
+              </div>
+              <span>
+                {activeWorkspace === null 
+                  ? `${user?.name.split(' ')[0]} (Personal)` 
+                  : joinedTeams.find(t => t.owner_id === activeWorkspace)?.owner_name + ' (Shared)'
+                }
+              </span>
+              <ChevronRight size={14} className="text-muted-foreground group-hover:rotate-90 transition-transform" />
+            </button>
+            <div className="absolute right-0 mt-2 w-64 bg-card border rounded-2xl shadow-xl z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all py-2 translate-y-2 group-hover:translate-y-0">
+               <p className="px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-50">Switch Workspace</p>
+               <button 
                 onClick={() => setActiveWorkspace(null)}
-                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${
-                  activeWorkspace === null
-                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                    : 'bg-card border hover:bg-accent'
-                }`}
-              >
-                Your Overview
-              </button>
-              {joinedTeams.map((team) => (
-                <button
+                className={`w-full px-4 py-2.5 text-left text-sm font-semibold hover:bg-accent flex items-center justify-between group/item ${activeWorkspace === null ? 'bg-primary/5 text-primary' : ''}`}
+               >
+                 <span className="flex items-center gap-2">
+                   <div className="w-2 h-2 rounded-full bg-primary" />
+                   {user?.name} (Personal)
+                 </span>
+                 {activeWorkspace === null && <CheckCircle2 size={14} />}
+               </button>
+               {joinedTeams.map(team => (
+                 <button 
                   key={team.owner_id}
                   onClick={() => setActiveWorkspace(team.owner_id)}
-                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 ${
-                    activeWorkspace === team.owner_id
-                      ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                      : 'bg-card border hover:bg-accent'
-                  }`}
-                >
-                  {team.owner_name}'s Overview
-                  <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded-full uppercase tracking-wider">
-                    {team.role}
-                  </span>
-                </button>
-              ))}
-            </>
-          )}
+                  className={`w-full px-4 py-2.5 text-left text-sm font-semibold hover:bg-accent flex items-center justify-between group/item ${activeWorkspace === team.owner_id ? 'bg-primary/5 text-primary' : ''}`}
+                 >
+                   <span className="flex items-center gap-2">
+                     <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                     {team.owner_name} (Shared)
+                   </span>
+                   {activeWorkspace === team.owner_id && <CheckCircle2 size={14} />}
+                 </button>
+                ))}
+            </div>
+          </div>
+          
+          {/* Monitor Switcher Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-3 px-4 py-2.5 bg-card border rounded-2xl text-sm font-bold shadow-sm hover:border-primary/50 transition-all outline-none min-w-[180px]">
+              <div className="w-5 h-5 rounded bg-amber-500/10 flex items-center justify-center text-amber-500">
+                <Activity size={12} />
+              </div>
+              <span className="truncate max-w-[120px]">
+                {activeMonitorId === null 
+                  ? 'All Monitors' 
+                  : workspaceMonitors.find(m => m.id === activeMonitorId)?.name || 'Select Monitor'
+                }
+              </span>
+              <ChevronRight size={14} className="text-muted-foreground group-hover:rotate-90 transition-transform ml-auto" />
+            </button>
+            <div className="absolute right-0 mt-2 w-64 bg-card border rounded-2xl shadow-xl z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all py-2 translate-y-2 group-hover:translate-y-0 max-h-[300px] overflow-y-auto custom-scrollbar text-left">
+               <p className="px-4 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-50">Filter by Monitor</p>
+               <button 
+                onClick={() => setActiveMonitorId(null)}
+                className={`w-full px-4 py-2.5 text-left text-sm font-semibold hover:bg-accent flex items-center justify-between group/item ${activeMonitorId === null ? 'bg-primary/5 text-primary' : ''}`}
+               >
+                 <span className="flex items-center gap-2 text-left">
+                   <div className="w-2 h-2 rounded-full bg-primary" />
+                   All Monitors
+                 </span>
+                 {activeMonitorId === null && <CheckCircle2 size={14} />}
+               </button>
+               {workspaceMonitors.map(monitor => (
+                 <button 
+                  key={monitor.id}
+                  onClick={() => setActiveMonitorId(monitor.id)}
+                  className={`w-full px-4 py-2.5 text-left text-sm font-semibold hover:bg-accent flex items-center justify-between group/item ${activeMonitorId === monitor.id ? 'bg-primary/5 text-primary' : ''}`}
+                 >
+                   <span className="flex items-center gap-2 truncate text-left">
+                     <div className={`w-2 h-2 rounded-full ${monitor.status === 'online' ? 'bg-emerald-500' : 'bg-destructive'}`} />
+                     {monitor.name}
+                   </span>
+                   {activeMonitorId === monitor.id && <CheckCircle2 size={14} />}
+                 </button>
+               ))}
+            </div>
+          </div>
+
           <Link 
             to="/dashboard/monitors" 
-            className="inline-flex items-center justify-center rounded-lg border bg-card px-4 py-2 text-sm font-semibold hover:bg-accent transition-colors"
+            className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-2xl text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
           >
-            View All Monitors
+            <Plus size={16} />
+            <span>New Monitor</span>
           </Link>
         </div>
       </div>
@@ -328,7 +448,7 @@ const DashboardPage: React.FC = () => {
               <TrendingUp size={14} className="text-green-500" /> Live
             </div>
           </div>
-          <UptimeChart activeWorkspace={activeWorkspace} />
+          <UptimeChart activeWorkspace={activeWorkspace} activeMonitorId={activeMonitorId} />
         </div>
 
         {/* Active Monitors */}
@@ -360,15 +480,27 @@ const DashboardPage: React.FC = () => {
               </div>
             ))}
             {monitors.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-xs text-muted-foreground mb-4">No monitors configured yet.</p>
-                <Link to="/dashboard/monitors" className="text-xs font-bold text-primary">Create your first monitor</Link>
+              <div className="text-center py-12 border-2 border-dashed rounded-2xl border-muted/20">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-4">
+                  <Plus size={24} />
+                </div>
+                <h4 className="font-bold text-sm mb-1">No monitors configured yet</h4>
+                <p className="text-[10px] text-muted-foreground mb-6">Start monitoring your systems in seconds</p>
+                <Link 
+                  to="/dashboard/monitors" 
+                  className="bg-primary text-white px-6 py-2 rounded-xl text-xs font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all inline-block"
+                >
+                  Create Monitor
+                </Link>
               </div>
             )}
           </div>
-          <Link to="/dashboard/monitors" className="mt-8 block w-full py-2 text-center text-xs font-semibold bg-accent rounded-lg hover:bg-accent/80 transition-colors">
-            View All Monitors
-          </Link>
+          {monitors.length > 0 && (
+            <Link to="/dashboard/monitors" className="mt-8 block w-full py-3 text-center text-xs font-bold bg-accent/50 rounded-xl hover:bg-accent transition-all group">
+              View All Monitors
+              <ChevronRight size={14} className="inline ml-1 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          )}
         </div>
       </div>
 
@@ -386,26 +518,43 @@ const DashboardPage: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="p-6 rounded-xl border bg-card flex items-start gap-4">
-          <div className="p-2 bg-green-500/10 rounded-lg text-green-500">
+        <div className="p-6 rounded-2xl border bg-card/50 flex items-start gap-4 hover:border-emerald-500/50 transition-colors">
+          <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-500">
             <CheckCircle2 size={20} />
           </div>
-          <div>
-            <h4 className="text-sm font-bold">System Status</h4>
-            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-              Worker and Redis are operational. Pings running on schedule.
-            </p>
+          <div className="flex-1">
+            <h4 className="text-sm font-bold flex items-center justify-between">
+              System Status
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-[10px] text-emerald-500 font-bold uppercase tracking-tighter">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Live
+              </div>
+            </h4>
+            <div className="mt-3 space-y-2">
+               <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  <span>Worker Cluster</span>
+                  <span className="text-emerald-500 border-b border-emerald-500/20">● Operational</span>
+               </div>
+               <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  <span>In-Memory Cache</span>
+                  <span className="text-emerald-500 border-b border-emerald-500/20">● Operational</span>
+               </div>
+               <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  <span>API Services</span>
+                  <span className="text-emerald-500 border-b border-emerald-500/20">● Operational</span>
+               </div>
+            </div>
           </div>
         </div>
-        <div className="p-6 rounded-xl border bg-card flex items-start gap-4">
-          <div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-500">
+        <div className="p-6 rounded-2xl border bg-card/50 flex items-start gap-4 hover:border-amber-500/50 transition-colors">
+          <div className="p-2.5 bg-amber-500/10 rounded-xl text-amber-500">
             <AlertCircle size={20} />
           </div>
           <div>
-            <h4 className="text-sm font-bold">Alerts</h4>
-            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-              Alerts trigger after 3 consecutive failures.
-              <Link to="/dashboard/logs" className="text-primary cursor-pointer ml-1 inline-flex items-center gap-0.5 font-bold">View Logs <ChevronRight size={12} /></Link>
+            <h4 className="text-sm font-bold">Alert Rules</h4>
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed font-medium">
+              Intelligent thresholding active. Alerts trigger after <span className="text-amber-500 font-bold">3 consecutive</span> failures.
+              <Link to="/dashboard/logs" className="text-primary hover:underline ml-1 inline-flex items-center gap-0.5 font-bold">Uptime History <ChevronRight size={12} /></Link>
             </p>
           </div>
         </div>

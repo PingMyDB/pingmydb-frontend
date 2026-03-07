@@ -47,7 +47,8 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen pt-24 pb-12 flex flex-col items-center justify-center px-4 relative overflow-hidden">
       <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="absolute top-1/4 -right-64 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
+        <div className="absolute top-1/4 -right-64 w-[500px] h-[500px] bg-emerald-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
+        <div className="absolute bottom-1/4 -left-64 w-[500px] h-[500px] bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000" />
       </div>
 
       <motion.div 
@@ -57,7 +58,7 @@ const ResetPassword = () => {
       >
         <div className="bg-card/40 backdrop-blur-xl border border-white/10 rounded-[2rem] p-8 shadow-2xl">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 text-primary shadow-inner">
+            <div className="w-16 h-16 bg-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 text-emerald-500 shadow-inner">
               <Lock size={32} />
             </div>
             <h1 className="text-3xl font-black mb-2">New Password</h1>
@@ -123,7 +124,7 @@ const ResetPassword = () => {
                <button
                  type="submit"
                  disabled={status === 'loading'}
-                 className="w-full h-12 bg-primary text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
+                 className="w-full h-12 bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
                >
                  {status === 'loading' ? 'Saving...' : 'Reset Password'}
                </button>

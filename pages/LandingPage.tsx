@@ -138,7 +138,7 @@ const MonitoringMockup = () => {
       <motion.div 
         animate={{ scale: [1, 1.05, 1] }}
         transition={{ duration: 4, repeat: Infinity }}
-        className="relative z-10 w-24 h-24 rounded-3xl bg-blue-600 flex items-center justify-center shadow-[0_0_50px_rgba(37,99,235,0.4)] border border-white/20"
+        className="relative z-10 w-24 h-24 rounded-3xl bg-emerald-600 flex items-center justify-center shadow-[0_0_50px_rgba(16,185,129,0.4)] border border-white/20"
       >
         <Activity size={40} className="text-white" />
       </motion.div>
@@ -146,7 +146,7 @@ const MonitoringMockup = () => {
       {[
         { icon: Database, label: "Supabase", pos: "top-10 left-10", color: "text-emerald-400" },
         { icon: Server, label: "MongoDB", pos: "top-10 right-10", color: "text-green-400" },
-        { icon: Network, label: "Neon", pos: "bottom-10 left-10", color: "text-blue-400" },
+        { icon: Network, label: "Neon", pos: "bottom-10 left-10", color: "text-emerald-400" },
         { icon: Zap, label: "Railway", pos: "bottom-10 right-10", color: "text-purple-400" }
       ].map((node, i) => (
         <motion.div 
@@ -163,12 +163,27 @@ const MonitoringMockup = () => {
         </motion.div>
       ))}
 
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full backdrop-blur-md">
-         <span className="text-xs text-white font-medium flex items-center gap-2">
-           <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+      <motion.div 
+        animate={{ 
+          boxShadow: ["0 0 0px rgba(16,185,129,0)", "0 0 25px rgba(16,185,129,0.4)", "0 0 0px rgba(16,185,129,0)"],
+          borderColor: ["rgba(255,255,255,0.1)", "rgba(16,185,129,0.6)", "rgba(255,255,255,0.1)"]
+        }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-emerald-500/5 border border-white/10 px-4 py-1.5 rounded-full backdrop-blur-md"
+      >
+         <motion.span 
+           animate={{ 
+             opacity: [0.7, 1, 0.7],
+             color: ["#ffffff", "#34d399", "#ffffff"],
+             textShadow: ["0 0 0px rgba(16,185,129,0)", "0 0 10px rgba(16,185,129,0.5)", "0 0 0px rgba(16,185,129,0)"]
+           }}
+           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+           className="text-xs font-bold flex items-center gap-2 whitespace-nowrap"
+         >
+           <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_12px_rgba(52,211,153,1)]" />
            Live monitoring active
-         </span>
-      </div>
+         </motion.span>
+      </motion.div>
     </div>
   );
 };
@@ -197,36 +212,36 @@ const LandingPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest mb-8 border border-primary/20">
-              <Zap size={12} /> Stop the sleep cycle
+            <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[9px] font-bold uppercase tracking-widest mb-6 border border-primary/20">
+              <Zap size={10} /> Stop the sleep cycle
             </span>
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
-              Keep your database active. <span className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-400">Automatically</span>. 
+            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight mb-4 md:mb-6 leading-[1.1]">
+              Keep your database active. <span className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-400">Automatically</span>. 
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed">
+            <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed px-2">
               PingMyDB periodically connects to your database to prevent it from going inactive — no queries, no cron jobs, no maintenance.
             </p>
-            <p className="text-sm font-bold text-primary mb-10 max-w-xl mx-auto bg-primary/20 py-2 px-4 rounded-full border border-primary/30 shadow-sm">
-               Ideal for free-tier and low-traffic databases on Supabase, Neon, MongoDB Atlas, Railway, and Render.
+            <p className="text-[10px] md:text-sm font-bold text-primary mb-8 max-w-xl mx-auto bg-primary/10 py-1.5 px-4 rounded-full border border-primary/20 shadow-sm leading-tight">
+               Ideal for free-tier databases on Supabase, Neon, MongoDB, and more.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 px-4">
               <button 
                 onClick={() => navigate('/register')}
-                className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-xl text-lg font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 group shadow-xl shadow-primary/30"
+                className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-3.5 rounded-xl text-base font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 group shadow-xl shadow-primary/30"
                 aria-label="Register for free"
               >
-                Start Free <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                Start Free <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
               <button 
                 onClick={() => setIsDemoOpen(true)}
-                className="w-full sm:w-auto px-8 py-4 rounded-xl border border-border font-bold hover:bg-accent transition-all flex items-center justify-center gap-2 bg-card/50 text-foreground"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-border font-bold hover:bg-accent transition-all flex items-center justify-center gap-2 bg-card/50 text-foreground text-base"
                 aria-label="Watch application demo"
               >
-                <Eye size={20} /> View Demo
+                <Eye size={18} /> View Demo
               </button>
             </div>
             
-            <div className="mt-20 relative p-1 rounded-[2.5rem] bg-gradient-to-b from-blue-500/20 to-transparent border border-border/40 backdrop-blur-sm shadow-2xl aspect-video max-w-3xl mx-auto group">
+            <div className="mt-20 relative p-1 rounded-[2.5rem] bg-gradient-to-b from-emerald-500/20 to-transparent border border-border/40 backdrop-blur-sm shadow-2xl aspect-video max-w-3xl mx-auto group">
                <div className="absolute -inset-4 bg-primary/10 rounded-[3rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
                <MonitoringMockup />
                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none"></div>
@@ -244,7 +259,7 @@ const LandingPage: React.FC = () => {
             <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed">Simple solutions for complex infrastructure problems.</p>
           </div>
           
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
             {[
               { title: "Prevent Idle State", desc: "Prevent free-tier databases from going idle by maintaining active connectivity.", icon: Activity },
               { title: "Reduce Cold Starts", desc: "Reduce backend cold-start delays significantly, ensuring your API is always responsive.", icon: Zap },
@@ -254,13 +269,13 @@ const LandingPage: React.FC = () => {
               <motion.div 
                 key={i}
                 whileHover={{ y: -8 }}
-                className="p-8 rounded-3xl border border-border bg-card/80 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all group"
+                className="p-4 md:p-8 rounded-2xl md:rounded-3xl border border-border bg-card/80 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all group flex flex-col items-center text-center md:items-start md:text-left aspect-square md:aspect-auto md:h-full justify-center md:justify-start"
               >
-                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-8 group-hover:scale-110 transition-transform">
-                  <f.icon size={28} />
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl md:rounded-2xl flex items-center justify-center text-primary mb-2 md:mb-8 group-hover:scale-110 transition-transform">
+                  <f.icon className="w-5 h-5 md:w-7 md:h-7" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">{f.title}</h3>
-                <p className="text-foreground/80 leading-relaxed text-sm">{f.desc}</p>
+                <h3 className="text-[12px] md:text-2xl font-bold mb-1 md:mb-4 leading-tight">{f.title}</h3>
+                <p className="text-foreground/80 leading-relaxed text-sm hidden md:block">{f.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -310,9 +325,9 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex md:grid overflow-x-auto md:overflow-visible pb-8 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory md:grid-cols-2 lg:grid-cols-4 gap-6 scrollbar-hide">
             {/* Starter Preview */}
-            <div className="p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center">
+            <div className="min-w-[280px] md:min-w-0 snap-center p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center shrink-0 md:shrink">
               <h3 className="font-bold text-lg mb-2">Starter</h3>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-3xl font-black">$0</span>
@@ -331,7 +346,7 @@ const LandingPage: React.FC = () => {
             </div>
 
             {/* Student Preview */}
-            <div className="p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center">
+            <div className="min-w-[280px] md:min-w-0 snap-center p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center shrink-0 md:shrink">
               <h3 className="font-bold text-lg mb-2">Student</h3>
               <div className="flex flex-col items-center mb-6">
                 <span className="text-sm text-muted-foreground line-through font-bold mb-1">$1.99</span>
@@ -353,7 +368,7 @@ const LandingPage: React.FC = () => {
             </div>
 
             {/* Pro Preview (Highlighted) */}
-            <div className="p-8 rounded-2xl border border-primary/40 bg-primary/5 relative flex flex-col items-center text-center shadow-2xl shadow-primary/10">
+            <div className="min-w-[280px] md:min-w-0 snap-center p-8 rounded-2xl border border-primary/40 bg-primary/5 relative flex flex-col items-center text-center shadow-2xl shadow-primary/10 shrink-0 md:shrink">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-black px-3 py-1 rounded-full uppercase">Most Popular</div>
               <h3 className="font-bold text-lg mb-2 text-primary">Pro Plan</h3>
               <div className="flex flex-col items-center mb-6">
@@ -377,7 +392,7 @@ const LandingPage: React.FC = () => {
             </div>
 
             {/* enterprise Preview */}
-            <div className="p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center">
+            <div className="min-w-[280px] md:min-w-0 snap-center p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center shrink-0 md:shrink">
               <h3 className="font-bold text-lg mb-2">Enterprise</h3>
               <div className="flex flex-col items-center mb-6">
                 <span className="text-sm text-muted-foreground line-through font-bold mb-1">$19.99</span>
@@ -408,35 +423,35 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer - Highly Differentiated Background */}
-      <footer className="py-20 border-t border-border/80 px-4 bg-muted/60 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-6 cursor-pointer" onClick={() => navigate('/')}>
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground">
-                <Database size={20} />
-              </div>
-              <span className="text-xl font-black tracking-tight">PingMyDb</span>
+      <footer className="py-12 md:py-20 border-t border-border/80 px-4 bg-muted/60 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-8">
+          <div className="col-span-2">
+            <div className="flex items-center gap-2 mb-4 cursor-pointer" onClick={() => navigate('/')}>
+              <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg" alt="PingMyDb Logo" />
+              <span className="text-xl font-black tracking-tight">
+                <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+              </span>
             </div>
             <p className="text-muted-foreground text-sm max-w-sm leading-relaxed">
               We help developers keep their databases active and reliable — automatically.
             </p>
           </div>
-          <div>
-            <h4 className="font-bold mb-6 text-sm uppercase tracking-widest text-foreground">Product</h4>
-            <div className="flex flex-col gap-4 text-sm text-muted-foreground font-medium">
+          <div className="col-span-1">
+            <h4 className="font-bold mb-4 text-xs uppercase tracking-widest text-foreground">Product</h4>
+            <div className="flex flex-col gap-3 text-sm text-muted-foreground font-medium">
               <Link to="/pricing" className="hover:text-primary transition-colors">Pricing</Link>
               <Link to="/docs" className="text-left hover:text-primary transition-colors">Documentation</Link>
             </div>
           </div>
-          <div>
-            <h4 className="font-bold mb-6 text-sm uppercase tracking-widest text-foreground">Legal</h4>
-            <div className="flex flex-col gap-4 text-sm text-muted-foreground font-medium">
+          <div className="col-span-1">
+            <h4 className="font-bold mb-4 text-xs uppercase tracking-widest text-foreground">Legal</h4>
+            <div className="flex flex-col gap-3 text-sm text-muted-foreground font-medium">
               <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
               <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
             </div>
           </div>
-          <div>
-            <h4 className="font-bold mb-6 text-sm uppercase tracking-widest text-foreground">Connect</h4>
+          <div className="col-span-2 md:col-span-1">
+            <h4 className="font-bold mb-4 text-xs uppercase tracking-widest text-foreground">Connect</h4>
             <div className="flex gap-4">
               <a href="https://github.com/orgs/PingMyDB/repositories" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl border border-border bg-card flex items-center justify-center hover:bg-accent transition-colors shadow-sm text-foreground" aria-label="Visit our Github">
                 <Github size={18} />
@@ -447,7 +462,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-border/40 text-center">
+        <div className="max-w-7xl mx-auto mt-12 md:mt-20 pt-8 border-t border-border/40 text-center">
           <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">&copy; {new Date().getFullYear()} PingMyDb. All rights reserved.</p>
         </div>
       </footer>

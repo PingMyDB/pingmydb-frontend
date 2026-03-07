@@ -10,6 +10,8 @@ interface AuthContextType extends AuthState {
   updateProfile: (name: string, avatarUrl?: string) => Promise<void>;
   sendEmailOtp: (newEmail: string) => Promise<void>;
   verifyEmailOtp: (otp: string) => Promise<void>;
+  sendCurrentEmailOtp: () => Promise<void>;
+  verifyCurrentEmailOtp: (otp: string) => Promise<void>;
   changePassword: (currentPass: string, newPass: string) => Promise<void>;
   deleteAccount: () => Promise<void>;
   forceVerify: () => void;
@@ -273,6 +275,47 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const sendCurrentEmailOtp = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/profile/send-current-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': token || ''
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to send OTP to current email');
+      }
+    } catch (error) {
+      console.error("Send Current OTP error", error);
+      throw error;
+    }
+  };
+
+  const verifyCurrentEmailOtp = async (otp: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/profile/verify-current-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': token || ''
+        },
+        body: JSON.stringify({ otp }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to verify current email OTP');
+      }
+    } catch (error) {
+      console.error("Verify Current OTP error", error);
+      throw error;
+    }
+  };
+
   const changePassword = async (currentPass: string, newPass: string) => {
     try {
       const response = await fetch(`${API_BASE_URL}/profile/password`, {
@@ -326,7 +369,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, token, login, register, logout, checkAuth, updateProfile, sendEmailOtp, verifyEmailOtp, changePassword, deleteAccount, forceVerify, isLoading }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated, 
+      token, 
+      login, 
+      register, 
+      logout, 
+      checkAuth, 
+      updateProfile, 
+      sendEmailOtp, 
+      verifyEmailOtp, 
+      sendCurrentEmailOtp,
+      verifyCurrentEmailOtp,
+      changePassword, 
+      deleteAccount, 
+      forceVerify, 
+      isLoading 
+    }}>
       {children}
     </AuthContext.Provider>
   );

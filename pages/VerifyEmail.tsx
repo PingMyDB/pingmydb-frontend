@@ -50,7 +50,11 @@ const VerifyEmail = () => {
   }, [token, login, navigate]);
 
   return (
-    <div className="min-h-screen pt-24 pb-12 flex flex-col items-center justify-center px-4 relative">
+    <div className="min-h-screen pt-24 pb-12 flex flex-col items-center justify-center px-4 relative overflow-hidden">
+      <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 -right-64 w-[500px] h-[500px] bg-emerald-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob" />
+        <div className="absolute bottom-1/4 -left-64 w-[500px] h-[500px] bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-4000" />
+      </div>
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}

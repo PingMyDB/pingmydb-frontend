@@ -44,6 +44,24 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
+const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, user, isLoading } = useAuth();
+  
+  if (isLoading) {
+      return (
+          <div className="min-h-screen flex items-center justify-center bg-background">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+      );
+  }
+  
+  if (!isAuthenticated || user?.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
 const AppContent: React.FC = () => {
     // The checkAuth is handled inside AuthProvider, 
     // but if we need global loading state we can add it there.
@@ -91,8 +109,22 @@ const AppContent: React.FC = () => {
                 <Route path="team" element={<TeamPage />} />
 
                 {/* Admin Routes */}
-                <Route path="admin" element={<AdminDashboard />} />
-                <Route path="admin/users" element={<AdminUsers />} />
+                <Route 
+                  path="admin" 
+                  element={
+                    <AdminProtectedRoute>
+                      <AdminDashboard />
+                    </AdminProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="admin/users" 
+                  element={
+                    <AdminProtectedRoute>
+                      <AdminUsers />
+                    </AdminProtectedRoute>
+                  } 
+                />
               </Route>
       
               {/* Fallback */}

@@ -59,17 +59,24 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
             <Menu size={20} />
           </button>
           
-          <div className="relative hidden md:block w-64">
+          
+          <div className="relative hidden md:block w-64 lg:w-80">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
             <input 
               type="text" 
               placeholder="Search monitors..." 
-              className="w-full bg-accent/50 border border-transparent focus:border-primary/20 rounded-lg py-1.5 pl-10 pr-4 text-sm focus:outline-none transition-all"
+              className="w-full bg-accent/30 border border-border focus:border-primary/40 rounded-xl py-1.5 pl-10 pr-4 text-sm focus:outline-none transition-all focus:ring-4 focus:ring-primary/5"
             />
           </div>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-4">
+        {/* Global Status Indicator - Desktop Only */}
+        <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/5 border border-emerald-500/20">
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">All Systems Operational</span>
+        </div>
+
+        <div className="flex items-center gap-2 md:gap-3">
           <motion.button 
             whileTap={{ scale: 0.9 }}
             onClick={toggleTheme}
@@ -83,12 +90,14 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
           <div className="relative">
             <button 
               onClick={() => setShowNotifications(!showNotifications)}
-              className={`p-2.5 rounded-lg border bg-card hover:bg-accent text-muted-foreground transition-colors relative ${showNotifications ? 'bg-accent border-primary/20' : ''}`}
+              className={`p-2.5 rounded-xl border bg-card hover:bg-accent text-muted-foreground transition-all relative group ${showNotifications ? 'bg-accent border-primary/20' : ''}`}
               aria-label={`Open notifications, ${allAlerts.length} total`}
             >
-              <Bell size={18} />
+              <Bell size={18} className="group-hover:rotate-12 transition-transform" />
               {allAlerts.length > 0 && (
-                <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full ring-2 ring-background animate-pulse"></span>
+                <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-primary text-[10px] font-bold text-white rounded-full ring-4 ring-background animate-in zoom-in">
+                  {allAlerts.length}
+                </span>
               )}
             </button>
 

@@ -124,8 +124,8 @@ const PrivacyPage: React.FC = () => {
       <footer className="border-t border-border/40 py-16 bg-muted/20">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 text-sm text-muted-foreground font-medium">
           <div className="flex items-center gap-4">
-            <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center text-background font-black">P</div>
-            <p>© 2026 PingMyDb Systems Inc.</p>
+            <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg" alt="Logo" />
+            <p>© 2026 <span className="text-primary">Ping</span><span className="text-white">MyDb</span> Systems Inc.</p>
           </div>
           <div className="flex gap-8 items-center">
             <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>

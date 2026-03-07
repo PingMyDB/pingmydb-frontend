@@ -15,30 +15,26 @@ import {
   Mail,
   MessageSquare,
   Shield,
-  Clock
+  Clock,
+  GraduationCap
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNotificationStore } from '../store/notificationStore';
 import NotificationSettings from '../components/NotificationSettings';
 import ConfirmationModal from '../components/ConfirmationModal';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { API_BASE_URL } from '../src/config';
 
 const SettingsPage: React.FC = () => {
-  const { user, updateProfile, sendEmailOtp, verifyEmailOtp, changePassword, deleteAccount } = useAuth();
+  const { user, updateProfile, sendEmailOtp, verifyEmailOtp, changePassword, deleteAccount, sendCurrentEmailOtp, verifyCurrentEmailOtp } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [showKey, setShowKey] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [otp, setOtp] = useState('');
-  const [isSaved, setIsSaved] = useState(false);
-  const [showOtpInput, setShowOtpInput] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'notifications'>((searchParams.get('tab') as any) || 'profile');
@@ -47,6 +43,13 @@ const SettingsPage: React.FC = () => {
   const [selectedAvatar, setSelectedAvatar] = useState(user?.avatarUrl || '');
   const [institutionName, setInstitutionName] = useState(user?.institution_name || '');
   const [isVerifyingStudent, setIsVerifyingStudent] = useState(false);
+  const [isStudentToggle, setIsStudentToggle] = useState(user?.student_status === 'verified' || user?.student_status === 'pending');
+
+  // Multi-step Email Change States
+  const [emailStep, setEmailStep] = useState<'idle' | 'verifying_current' | 'entering_new' | 'verifying_new'>('idle');
+  const [currentEmailOtp, setCurrentEmailOtp] = useState('');
+  const [newEmailOtp, setNewEmailOtp] = useState('');
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
 
   const avatarOptions = [
     'https://api.dicebear.com/9.x/avataaars/svg?seed=Felix',
@@ -59,21 +62,6 @@ const SettingsPage: React.FC = () => {
     'https://api.dicebear.com/9.x/avataaars/svg?seed=Luna',
     'https://api.dicebear.com/9.x/avataaars/svg?seed=Boots'
   ];
-
-  const handleAvatarSelect = async (avatarUrl: string) => {
-    setSelectedAvatar(avatarUrl);
-    setIsAvatarModalOpen(false);
-    try {
-        // We assume updateProfile can handle the avatar update. 
-        // If not, we'll need to update the AuthContext.
-        // For now, passing two args as the user requested "remove the text and option to upload...".
-        // If the backend/context doesn't support it, we might need a separate API call later.
-        await updateProfile(name, avatarUrl);
-        toast.success("Avatar updated!");
-    } catch (err) {
-        toast.error("Failed to update avatar");
-    }
-  };
 
   useEffect(() => {
     fetchChannels();
@@ -91,46 +79,81 @@ const SettingsPage: React.FC = () => {
     setSearchParams({ tab });
   };
 
+  const handleAvatarSelect = async (avatarUrl: string) => {
+    setSelectedAvatar(avatarUrl);
+    setIsAvatarModalOpen(false);
+    try {
+        await updateProfile(name, avatarUrl);
+        toast.success("Avatar updated!");
+    } catch (err) {
+        toast.error("Failed to update avatar");
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
         await updateProfile(name, selectedAvatar);
-        
-        // If email changed, trigger OTP flow
-        if (email !== user?.email) {
-            await sendEmailOtp(email);
-            setShowOtpInput(true);
-            toast.info(`OTP sent to ${email}`);
-        } else {
-            setIsSaved(true);
-            toast.success('Profile updated');
-            setTimeout(() => setIsSaved(false), 3000);
-        }
+        toast.success('Profile updated');
     } catch (error: any) {
         toast.error(error.message || 'Failed to update profile');
     }
   };
 
-  const handleVerifyOtp = async () => {
-      try {
-          setIsVerifying(true);
-          await verifyEmailOtp(otp);
-          toast.success('Email updated successfully');
-          setShowOtpInput(false);
-          setOtp('');
-      } catch (error: any) {
-          toast.error(error.message || 'Invalid OTP');
-      } finally {
-          setIsVerifying(false);
-      }
+  const handleStartEmailChange = async () => {
+    setIsEmailLoading(true);
+    try {
+      await sendCurrentEmailOtp();
+      setEmailStep('verifying_current');
+      toast.info(`OTP sent to your current email: ${user?.email}`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to initiate email change");
+    } finally {
+      setIsEmailLoading(false);
+    }
   };
 
-  const handleTestChannel = async (id: number) => {
+  const handleVerifyCurrentOtp = async () => {
+    setIsEmailLoading(true);
     try {
-        await testChannel(id);
-        toast.success("Test notification sent!");
+      await verifyCurrentEmailOtp(currentEmailOtp);
+      setEmailStep('entering_new');
+      toast.success("Current email verified!");
     } catch (err: any) {
-        toast.error(err.message || "Failed to send test");
+      toast.error(err.message || "Invalid OTP");
+    } finally {
+      setIsEmailLoading(false);
+    }
+  };
+
+  const handleSendNewEmailOtp = async () => {
+    if (!email || email === user?.email) {
+      return toast.error("Please enter a different new email address");
+    }
+    setIsEmailLoading(true);
+    try {
+      await sendEmailOtp(email);
+      setEmailStep('verifying_new');
+      toast.info(`OTP sent to ${email}`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to send OTP to new email");
+    } finally {
+      setIsEmailLoading(false);
+    }
+  };
+
+  const handleVerifyNewOtp = async () => {
+    setIsEmailLoading(true);
+    try {
+      await verifyEmailOtp(newEmailOtp);
+      toast.success("Email updated successfully!");
+      setEmailStep('idle');
+      setNewEmailOtp('');
+      setCurrentEmailOtp('');
+    } catch (err: any) {
+      toast.error(err.message || "Invalid OTP for new email");
+    } finally {
+      setIsEmailLoading(false);
     }
   };
 
@@ -152,7 +175,6 @@ const SettingsPage: React.FC = () => {
         const data = await res.json();
         if (res.ok) {
             toast.success(data.message);
-            // Refresh user data in localStorage
             if (user) {
               const updatedUser = { ...user, ...data.user };
               localStorage.setItem('pmdb_user', JSON.stringify(updatedUser));
@@ -165,6 +187,15 @@ const SettingsPage: React.FC = () => {
         toast.error("Failed to submit verification");
     } finally {
         setIsVerifyingStudent(false);
+    }
+  };
+
+  const handleTestChannel = async (id: number) => {
+    try {
+        await testChannel(id);
+        toast.success("Test notification sent!");
+    } catch (err: any) {
+        toast.error(err.message || "Failed to send test");
     }
   };
 
@@ -205,7 +236,7 @@ const SettingsPage: React.FC = () => {
               <h2 className="text-xl font-bold flex items-center gap-2">
                 <User size={20} className="text-muted-foreground" /> Personal Information
               </h2>
-              {/* Profile Form */}
+              
               <form onSubmit={handleSave} className="bg-card border rounded-2xl p-8 shadow-sm space-y-6">
                 <div className="flex items-center gap-6 pb-6 border-b">
                   <img src={selectedAvatar} className="w-20 h-20 rounded-2xl border bg-muted" alt="Avatar" />
@@ -231,48 +262,150 @@ const SettingsPage: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold">Email Address</label>
-                    <div className="space-y-3">
-                      <input 
-                          type="email" 
-                          className="w-full rounded-xl border bg-accent/30 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                      />
-                      {showOtpInput && (
-                          <motion.div 
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              className="flex gap-2"
-                          >
-                              <input 
-                                  type="text" 
-                                  placeholder="Enter 6-digit OTP"
-                                  className="flex-1 rounded-xl border bg-accent/30 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                  value={otp}
-                                  onChange={(e) => setOtp(e.target.value)}
-                                  maxLength={6}
-                              />
-                              <button 
-                                  type="button"
-                                  onClick={handleVerifyOtp}
-                                  disabled={isVerifying || otp.length !== 6}
-                                  className="bg-primary text-primary-foreground px-4 rounded-xl text-sm font-bold hover:bg-primary/90 transition-all disabled:opacity-50"
-                              >
-                                  {isVerifying ? <RefreshCw className="animate-spin" size={16} /> : 'Verify'}
-                              </button>
-                          </motion.div>
-                      )}
-                    </div>
+                    <label className="text-sm font-semibold">Email Account</label>
+                    <input 
+                      disabled
+                      type="email" 
+                      className="w-full rounded-xl border bg-muted p-3 text-sm opacity-60"
+                      value={user?.email || ''}
+                    />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4">
-                  <p className="text-xs text-muted-foreground">Changing email requires OTP verification.</p>
+                <div className="space-y-4">
+                  <h3 className="font-bold border-t pt-6">Email Change Security</h3>
+                  <div className="grid md:grid-cols-2 gap-6 items-end">
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        To update your email, we require verification from both your current and new addresses.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                        {emailStep === 'idle' && (
+                            <button 
+                              type="button"
+                              onClick={handleStartEmailChange}
+                              disabled={isEmailLoading}
+                              className="w-full bg-accent hover:bg-accent/80 p-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 border border-border/50"
+                            >
+                              {isEmailLoading ? <RefreshCw className="animate-spin" size={16} /> : <Mail size={16} />}
+                              Begin Email Change
+                            </button>
+                        )}
+                        {(emailStep === 'verifying_current' || emailStep === 'verifying_new' || emailStep === 'entering_new') && (
+                            <button 
+                              type="button"
+                              onClick={() => setEmailStep('idle')}
+                              className="text-xs text-muted-foreground hover:text-primary underline mb-2 ml-auto block"
+                            >
+                              Cancel Process
+                            </button>
+                        )}
+                    </div>
+                  </div>
+
+                  <AnimatePresence>
+                    {emailStep === 'verifying_current' && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-accent/30 p-6 rounded-2xl border border-dashed border-primary/30 space-y-4"
+                      >
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px]">1</span>
+                          Verify Current Address
+                        </p>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            placeholder="Enter 6-digit OTP"
+                            className="flex-1 rounded-xl border bg-card p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                            value={currentEmailOtp}
+                            onChange={(e) => setCurrentEmailOtp(e.target.value)}
+                            maxLength={6}
+                          />
+                          <button 
+                            type="button"
+                            onClick={handleVerifyCurrentOtp}
+                            disabled={isEmailLoading || currentEmailOtp.length !== 6}
+                            className="bg-primary text-primary-foreground px-6 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50"
+                          >
+                            Verify
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {emailStep === 'entering_new' && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-accent/30 p-6 rounded-2xl border border-dashed border-primary/30 space-y-4"
+                      >
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px]">2</span>
+                          Enter New Email
+                        </p>
+                        <div className="flex flex-col gap-3">
+                          <input 
+                            type="email" 
+                            placeholder="new-email@example.com"
+                            className="w-full rounded-xl border bg-card p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                          />
+                          <button 
+                            type="button"
+                            onClick={handleSendNewEmailOtp}
+                            disabled={isEmailLoading}
+                            className="bg-primary text-primary-foreground w-full py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20"
+                          >
+                            Get Pin for New Email
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {emailStep === 'verifying_new' && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-accent/30 p-6 rounded-2xl border border-dashed border-emerald-500/30 space-y-4"
+                      >
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px]">3</span>
+                          Final Confirmation
+                        </p>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            placeholder="Enter final OTP"
+                            className="flex-1 rounded-xl border bg-card p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                            value={newEmailOtp}
+                            onChange={(e) => setNewEmailOtp(e.target.value)}
+                            maxLength={6}
+                          />
+                          <button 
+                            type="button"
+                            onClick={handleVerifyNewOtp}
+                            disabled={isEmailLoading || newEmailOtp.length !== 6}
+                            className="bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50"
+                          >
+                            Confirm Update
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <div className="flex items-center justify-end border-t pt-6 mt-4">
                   <button 
                     type="submit"
-                    disabled={showOtpInput}
-                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
                   >
                     Save Changes
                   </button>
@@ -280,61 +413,107 @@ const SettingsPage: React.FC = () => {
               </form>
 
               {/* Student Verification */}
-              <div className="bg-card border rounded-2xl p-8 shadow-sm space-y-6">
-                 <div>
-                    <h3 className="text-lg font-bold flex items-center gap-2">
-                       <Shield size={20} className="text-primary" /> Student Verification
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">Unlock the Student plan (₹39/mo) by verifying your academic status.</p>
+              <div className="bg-card border rounded-2xl p-8 shadow-sm space-y-8">
+                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h3 className="text-lg font-bold flex items-center gap-2">
+                           <Shield size={20} className="text-primary" /> Student Status
+                        </h3>
+                        <p className="text-sm text-muted-foreground mt-1">Access specialized pricing ($0.99/mo) for your academic projects.</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 bg-accent/30 px-4 py-2 rounded-2xl border border-border/50">
+                        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Are you a student?</span>
+                        <button 
+                            type="button"
+                            onClick={() => {
+                                if (user?.plan === 'student') {
+                                    toast.error("You cannot disable student status while on the Student plan.");
+                                    return;
+                                }
+                                setIsStudentToggle(!isStudentToggle);
+                            }}
+                            className={`relative w-11 h-6 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/20 ${isStudentToggle ? 'bg-primary shadow-inner' : 'bg-muted'}`}
+                        >
+                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 shadow-sm ${isStudentToggle ? 'translate-x-5' : ''}`} />
+                        </button>
+                    </div>
                  </div>
 
-                 {user?.student_status === 'verified' ? (
-                    <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-xl flex items-center gap-4 text-green-600 dark:text-green-500">
-                       <CheckCircle2 size={24} className="shrink-0" />
-                       <div>
-                          <p className="text-sm font-bold">You are a verified student!</p>
-                          <p className="text-xs">Enjoy discounted rates at {user.institution_name}.</p>
-                       </div>
-                    </div>
-                 ) : user?.student_status === 'pending' ? (
-                    <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl flex items-center gap-4 text-amber-600 dark:text-amber-500">
-                       <Clock size={24} className="shrink-0" />
-                       <div>
-                          <p className="text-sm font-bold">Verification is pending review</p>
-                          <p className="text-xs">We'll notify you once our team reviews your {user.institution_name} ID.</p>
-                       </div>
-                    </div>
-                 ) : (
-                    <form onSubmit={handleVerifyStudent} className="space-y-4">
-                       <div className="space-y-2">
-                          <label className="text-sm font-semibold">University / Institution Name</label>
-                          <input 
-                             type="text" 
-                             className="w-full rounded-xl border bg-accent/30 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                             placeholder="e.g. IIT Madras, VIT Vellore"
-                             value={institutionName}
-                             onChange={(e) => setInstitutionName(e.target.value)}
-                             required
-                          />
-                       </div>
-                       <div className="p-10 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center gap-4 hover:bg-accent/30 transition-colors cursor-pointer group">
-                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                             <User size={24} />
-                          </div>
-                          <div className="text-center">
-                             <p className="text-sm font-bold">Upload Student ID Proof</p>
-                             <p className="text-xs text-muted-foreground">PDF, JPG or PNG (Max 5MB)</p>
-                          </div>
-                       </div>
-                       <button 
-                          type="submit"
-                          disabled={isVerifyingStudent}
-                          className="w-full bg-foreground text-background py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50"
-                       >
-                          {isVerifyingStudent ? 'Submitting...' : 'Submit for Verification'}
-                       </button>
-                    </form>
-                 )}
+                 <AnimatePresence>
+                    {isStudentToggle && (
+                        <motion.div 
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="space-y-6 pt-4 border-t border-dashed"
+                        >
+                            {user?.student_status === 'verified' ? (
+                                <div className="bg-emerald-500/10 border border-emerald-500/20 p-6 rounded-2xl flex items-center gap-4 text-emerald-600 dark:text-emerald-500">
+                                   <div className="p-3 bg-emerald-500/20 rounded-xl">
+                                      <CheckCircle2 size={24} className="shrink-0" />
+                                   </div>
+                                   <div>
+                                      <p className="text-sm font-bold">Student Status Verified!</p>
+                                      <p className="text-xs font-medium opacity-80">You're currently authorized as a student from {user.institution_name}.</p>
+                                   </div>
+                                </div>
+                            ) : user?.student_status === 'pending' ? (
+                                <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-2xl flex items-center gap-4 text-amber-600 dark:text-amber-500">
+                                   <div className="p-3 bg-amber-500/20 rounded-xl">
+                                      <Clock size={24} className="shrink-0" />
+                                   </div>
+                                   <div>
+                                      <p className="text-sm font-bold">Verification In Progress</p>
+                                      <p className="text-xs font-medium opacity-80">Our team is reviewing your details for {user.institution_name}.</p>
+                                   </div>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleVerifyStudent} className="space-y-6">
+                                   <div className="space-y-2">
+                                      <label className="text-sm font-semibold flex items-center gap-2">
+                                        <GraduationCap size={16} className="text-primary" />
+                                        University / Institution Name
+                                      </label>
+                                      <input 
+                                         type="text" 
+                                         className="w-full rounded-xl border bg-accent/30 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                         placeholder="e.g. Stanford University, IIT Delhi"
+                                         value={institutionName}
+                                         onChange={(e) => setInstitutionName(e.target.value)}
+                                         required
+                                      />
+                                   </div>
+                                   
+                                   <div className="space-y-2">
+                                      <label className="text-sm font-semibold">Student Identity Proof</label>
+                                      <div className="p-8 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-4 hover:bg-accent/30 transition-all cursor-pointer group hover:border-primary/50">
+                                         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                                            <Shield size={22} />
+                                         </div>
+                                         <div className="text-center">
+                                            <p className="text-sm font-bold">Click to upload ID Card</p>
+                                            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">PDF, JPG or PNG (Max 5MB)</p>
+                                         </div>
+                                      </div>
+                                   </div>
+
+                                   <button 
+                                      type="submit"
+                                      disabled={isVerifyingStudent}
+                                      className="w-full bg-primary text-primary-foreground py-3 rounded-xl text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                                   >
+                                      {isVerifyingStudent ? (
+                                        <>
+                                            <RefreshCw className="animate-spin" size={16} /> Submitting...
+                                        </>
+                                      ) : 'Submit Verification Details'}
+                                   </button>
+                                </form>
+                            )}
+                        </motion.div>
+                    )}
+                 </AnimatePresence>
               </div>
             </section>
           )}
@@ -348,8 +527,6 @@ const SettingsPage: React.FC = () => {
               onTest={handleTestChannel}
             />
           )}
-
-
 
           {activeTab === 'security' && (
             <section className="space-y-10">
@@ -447,6 +624,7 @@ const SettingsPage: React.FC = () => {
                     </p>
                   </div>
                   <button 
+                    type="button"
                     onClick={() => setIsDeleteModalOpen(true)}
                     className="bg-destructive text-destructive-foreground px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-destructive/90 transition-all shadow-lg shadow-destructive/20"
                   >
@@ -490,7 +668,7 @@ const SettingsPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-2xl font-black">Choose Avatar</h3>
                     <button onClick={() => setIsAvatarModalOpen(false)} className="p-2 hover:bg-accent rounded-full transition-colors">
-                        <Trash2 size={20} className="rotate-45" /> {/* Close icon visual hack if XCircle not imported, but trash2 is */}
+                        <Trash2 size={20} className="rotate-45" />
                     </button>
                 </div>
                 
@@ -498,6 +676,7 @@ const SettingsPage: React.FC = () => {
                     {avatarOptions.map((url, i) => (
                         <button 
                             key={i}
+                            type="button"
                             onClick={() => handleAvatarSelect(url)}
                             className={`relative aspect-square rounded-2xl border-2 overflow-hidden transition-all hover:scale-105 ${selectedAvatar === url ? 'border-primary ring-4 ring-primary/20' : 'border-border hover:border-primary/50'}`}
                         >
@@ -513,6 +692,7 @@ const SettingsPage: React.FC = () => {
 
                 <div className="flex justify-end">
                     <button 
+                        type="button"
                         onClick={() => setIsAvatarModalOpen(false)}
                         className="px-6 py-2.5 font-bold rounded-xl border hover:bg-accent transition-colors"
                     >
@@ -522,7 +702,6 @@ const SettingsPage: React.FC = () => {
             </motion.div>
         </div>
       )}
-
     </div>
   );
 };

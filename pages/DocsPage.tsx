@@ -121,7 +121,7 @@ const DocsPage: React.FC = () => {
       {/* Subtle Background Mesh */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-40">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-primary/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
       </div>
 
       {/* Header */}
@@ -136,10 +136,10 @@ const DocsPage: React.FC = () => {
             </button>
             {!isLoggedIn && (
               <Link to="/" className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground shadow-sm group-hover:scale-105 transition-transform">
-                  <Database size={16} />
-                </div>
-                <span className="font-bold text-base tracking-tight hidden sm:block">PingMyDb <span className="text-primary">Docs</span></span>
+                <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg group-hover:scale-105 transition-transform" alt="Logo" />
+                <span className="font-bold text-base tracking-tight hidden sm:block">
+                  <span className="text-primary">Ping</span><span className="text-white">MyDb</span> <span className="text-primary">Docs</span>
+                </span>
               </Link>
             )}
           </div>
@@ -388,8 +388,8 @@ const DocsPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="py-12 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-40 text-[11px] font-bold uppercase tracking-widest border-t border-border/20">
            <div className="flex items-center gap-3">
-              <Database size={14} className="text-primary" />
-              <span>© 2026 PingMyDb Systems Inc.</span>
+              <img src="/favicon-96x96.png" className="w-5 h-5 rounded-md" alt="Logo" />
+              <span>© 2026 <span className="text-primary">Ping</span><span className="text-white">MyDb</span> Systems Inc.</span>
            </div>
            <div className="flex items-center gap-6">
               <Link to="/privacy" className="hover:text-primary transition-colors">Privacy</Link>

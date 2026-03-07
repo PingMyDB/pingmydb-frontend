@@ -75,7 +75,7 @@ const OnboardingModal: React.FC = () => {
                   className="space-y-6"
                 >
                   <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-[0_0_30px_rgba(var(--primary),0.2)]">
-                    <Database size={32} />
+                    <img src="/favicon-96x96.png" className="w-10 h-10" alt="Logo" />
                   </div>
                   <div>
                     <h2 className="text-3xl font-extrabold tracking-tight">Stop the Sleep Cycle.</h2>
@@ -101,7 +101,7 @@ const OnboardingModal: React.FC = () => {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6"
                 >
-                  <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500">
+                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                     <Zap size={32} />
                   </div>
                   <div>

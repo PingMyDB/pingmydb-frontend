@@ -65,8 +65,8 @@ const RegisterPage: React.FC = () => {
         className="w-full max-w-md"
       >
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-primary-foreground mb-4 shadow-lg shadow-primary/20">
-            <Database size={24} />
+          <div className="flex justify-center mb-4">
+            <img src="/favicon-96x96.png" className="w-12 h-12 rounded-xl shadow-lg shadow-primary/20" alt="Logo" />
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight">Create your account</h1>
           <p className="text-muted-foreground mt-2">Start keeping your apps awake today</p>

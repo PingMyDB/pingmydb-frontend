@@ -37,9 +37,9 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-12 flex flex-col items-center justify-center px-4 relative overflow-hidden">
-      <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="absolute top-1/4 -left-64 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
-        <div className="absolute top-1/3 -right-64 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
+      <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 -left-64 w-[500px] h-[500px] bg-emerald-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob" />
+        <div className="absolute top-1/3 -right-64 w-[500px] h-[500px] bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000" />
       </div>
 
       <motion.div 
@@ -58,13 +58,13 @@ const ForgotPassword = () => {
               <label className="text-sm font-semibold ml-1">Email Address</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail size={18} className="text-muted-foreground group-focus-within:text-primary transition-colors" />
+                  <Mail size={18} className="text-muted-foreground group-focus-within:text-emerald-500 transition-colors" />
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12 bg-background/50 border border-border rounded-xl pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  className="w-full h-12 bg-background/50 border border-border rounded-xl pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
                   placeholder="name@company.com"
                   required
                 />
@@ -87,7 +87,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={status === 'loading' || status === 'success'}
-              className="w-full h-12 bg-primary text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
+              className="w-full h-12 bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
             >
               {status === 'loading' ? 'Sending...' : 'Send Reset Link'}
             </button>

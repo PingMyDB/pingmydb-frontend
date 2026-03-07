@@ -104,10 +104,10 @@ const StatusPage: React.FC = () => {
             <header className="border-b bg-card/30 backdrop-blur-md sticky top-0 z-50">
                 <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
-                            <Zap size={20} fill="currentColor" />
-                        </div>
-                        <span className="font-black text-xl tracking-tighter">PingMyDb</span>
+                        <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg" alt="Logo" />
+                        <span className="font-bold text-xl tracking-tighter">
+                            <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+                        </span>
                     </div>
                     
                     <div className="flex items-center gap-4 text-xs font-bold text-muted-foreground uppercase tracking-widest bg-muted/20 px-3 py-1.5 rounded-full">
@@ -272,8 +272,8 @@ const StatusPage: React.FC = () => {
                         We monitor infrastructure health by performing periodic connectivity checks to the specified database endpoints.
                     </p>
                     <div className="flex items-center justify-center gap-6 pt-4">
-                        <Link to="/" className="text-xs font-black uppercase tracking-widest text-primary hover:opacity-80 transition-opacity">
-                            Created with PingMyDb
+                        <Link to="/" className="text-xs font-black uppercase tracking-widest hover:opacity-80 transition-opacity">
+                            Created with <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
                         </Link>
                         <span className="w-1 h-1 bg-muted-foreground/30 rounded-full" />
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-bold">

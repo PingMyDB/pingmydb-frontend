@@ -59,17 +59,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
-          {/* Logo Section - Fixed */}
-          <div className="p-6 flex items-center gap-2 border-b lg:border-none">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
-              <Database size={20} />
-            </div>
-            <span className="text-xl font-bold tracking-tight">PingMyDb</span>
+          {/* Logo Section - Tighter Padding */}
+          <div className="p-4 pt-5 flex items-center gap-2 border-b lg:border-none">
+            <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg shadow-lg shadow-primary/20" alt="PingMyDb Logo" />
+            <span className="text-xl font-bold tracking-tight">
+              <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+            </span>
           </div>
 
-          {/* Navigation Section - Scrollable internally if needed */}
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar">
-            <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4">Main Menu</p>
+          {/* Navigation Section */}
+          <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto custom-scrollbar">
+            <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 opacity-50">Main Menu</p>
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 onClick={() => onClose()}
               >
                 <item.icon size={18} />
-                <span className="font-medium text-sm">{item.label}</span>
+                <span className="font-semibold text-sm">{item.label}</span>
               </NavLink>
             ))}
 

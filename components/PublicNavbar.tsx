@@ -36,10 +36,10 @@ const PublicNavbar: React.FC = () => {
     <nav className="fixed top-0 w-full z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
-              <Database size={20} />
-            </div>
-            <span className="text-xl font-bold tracking-tight">PingMyDb</span>
+            <img src="/favicon-96x96.png" className="w-8 h-8 rounded-lg shadow-lg shadow-primary/20" alt="PingMyDb Logo" />
+            <span className="text-xl font-bold tracking-tight">
+              <span className="text-primary">Ping</span><span className="text-white">MyDb</span>
+            </span>
           </div>
           
           <div className="hidden md:flex items-center gap-8">
@@ -53,7 +53,7 @@ const PublicNavbar: React.FC = () => {
               className="p-2 rounded-lg border border-border bg-card/50 hover:bg-accent text-muted-foreground transition-all flex items-center justify-center font-bold"
               aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             >
-              {isDark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-blue-500" />}
+              {isDark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-emerald-500" />}
             </button>
             {user ? (
                <Link to="/dashboard" className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all shadow-lg shadow-primary/25">

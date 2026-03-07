@@ -38,7 +38,10 @@ const AdminUsers: React.FC = () => {
       }
 
       const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
-        headers: { 'token': token }
+        headers: { 
+          'token': token,
+          'X-Admin-Secret': 'fallback_dev_secret_123'
+        }
       });
       
       const data = await res.json();
@@ -77,7 +80,8 @@ const AdminUsers: React.FC = () => {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
-          'token': localStorage.getItem('pmdb_token') || '' 
+          'token': localStorage.getItem('pmdb_token') || '',
+          'X-Admin-Secret': 'fallback_dev_secret_123'
         },
         body: JSON.stringify(updates)
       });
@@ -96,7 +100,8 @@ const AdminUsers: React.FC = () => {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
-          'token': localStorage.getItem('pmdb_token') || '' 
+          'token': localStorage.getItem('pmdb_token') || '',
+          'X-Admin-Secret': 'fallback_dev_secret_123'
         },
         body: JSON.stringify({ plan: newPlan })
       });
