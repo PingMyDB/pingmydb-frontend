@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Bell, Search, User, LogOut, Moon, Sun, ChevronDown, Menu, Settings, XCircle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useMonitorStore } from '../store/monitorStore';
+import { useNotificationStore } from '../store/notificationStore';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavbarProps {
@@ -12,19 +13,27 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
   const { allAlerts, fetchAllAlerts } = useMonitorStore();
+  const { channels, fetchChannels } = useNotificationStore();
+  const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [isDark, setIsDark] = useState(true); // Default to true
+  const [isDark, setIsDark] = useState(true);
+  const [nudgeDismissed, setNudgeDismissed] = useState(
+    () => sessionStorage.getItem('notif_nudge_dismissed') === 'true'
+  );
 
   useEffect(() => {
     fetchAllAlerts();
-    const timer = setInterval(fetchAllAlerts, 30000); // refresh alerts every 30s
+    const timer = setInterval(fetchAllAlerts, 30000);
     return () => clearInterval(timer);
   }, [fetchAllAlerts]);
 
   useEffect(() => {
+    fetchChannels();
+  }, [fetchChannels]);
+
+  useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
-    // Default to dark if nothing is saved
     if (savedTheme === 'light') {
       document.documentElement.classList.remove('dark');
       setIsDark(false);
@@ -47,9 +56,18 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
     }
   };
 
+  const handleDismissNudge = () => {
+    setNudgeDismissed(true);
+    sessionStorage.setItem('notif_nudge_dismissed', 'true');
+  };
+
+  const hasActiveChannel = channels.some(c => c.is_enabled);
+  const showNudge = !hasActiveChannel && !nudgeDismissed;
+
   return (
-    <header className="h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30 px-4 lg:px-8">
-      <div className="h-full flex items-center justify-between gap-4">
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
+      {/* ─── Main Navbar Row ─────────────────────────────────────── */}
+      <div className="h-16 px-4 lg:px-8 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <button 
             onClick={onMenuClick}
@@ -58,7 +76,6 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
           >
             <Menu size={20} />
           </button>
-          
           
           <div className="relative hidden md:block w-64 lg:w-80">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
@@ -70,13 +87,48 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
           </div>
         </div>
 
-        {/* Global Status Indicator - Desktop Only */}
+        {/* System Status */}
         <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/5 border border-emerald-500/20">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">All Systems Operational</span>
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">
+
+          {/* ── Notification Nudge Chip (desktop only) ─────────── */}
+          <AnimatePresence>
+            {showNudge && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, x: 10 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.9, x: 10 }}
+                className="hidden md:flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-full pl-3 pr-1 py-1"
+              >
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                </span>
+                <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 whitespace-nowrap">
+                  Notifications off
+                </span>
+                <button
+                  onClick={() => navigate('/dashboard/settings?tab=notifications')}
+                  className="text-[11px] font-bold bg-amber-500 text-white px-2.5 py-1 rounded-full hover:bg-amber-600 transition-colors whitespace-nowrap"
+                >
+                  Enable →
+                </button>
+                <button
+                  onClick={handleDismissNudge}
+                  className="p-1 text-amber-500 hover:text-amber-700 dark:hover:text-amber-300 transition-colors opacity-60 hover:opacity-100"
+                  aria-label="Dismiss"
+                >
+                  <XCircle size={14} />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* ── Theme Toggle ─────────────────────────────────────── */}
           <motion.button 
             whileTap={{ scale: 0.9 }}
             onClick={toggleTheme}
@@ -87,11 +139,12 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
             {isDark ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-blue-500" />}
           </motion.button>
           
+          {/* ── Bell / Alerts Dropdown ───────────────────────────── */}
           <div className="relative">
             <button 
               onClick={() => setShowNotifications(!showNotifications)}
               className={`p-2.5 rounded-xl border bg-card hover:bg-accent text-muted-foreground transition-all relative group ${showNotifications ? 'bg-accent border-primary/20' : ''}`}
-              aria-label={`Open notifications, ${allAlerts.length} total`}
+              aria-label={`Open notifications`}
             >
               <Bell size={18} className="group-hover:rotate-12 transition-transform" />
               {allAlerts.length > 0 && (
@@ -111,8 +164,13 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     className="absolute right-0 mt-2 w-80 rounded-xl border bg-card shadow-lg z-20 overflow-hidden"
                   >
-                    <div className="px-4 py-3 border-b bg-muted/30">
-                      <h3 className="text-sm font-bold">Notifications</h3>
+                    <div className="px-4 py-3 border-b bg-muted/30 flex items-center justify-between">
+                      <h3 className="text-sm font-bold">Recent Alerts</h3>
+                      {!hasActiveChannel && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                          Alerts off
+                        </span>
+                      )}
                     </div>
                     <div className="max-h-[300px] overflow-y-auto">
                       {allAlerts.length === 0 ? (
@@ -147,12 +205,35 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                         <button className="text-[10px] font-bold text-primary hover:underline">View All History</button>
                       </div>
                     )}
+
+                    {/* ── Setup CTA inside dropdown ───────────────── */}
+                    {!hasActiveChannel && (
+                      <div className="border-t px-4 py-3 bg-amber-500/5">
+                        <p className="text-[10px] text-amber-600 dark:text-amber-400 font-bold mb-1 flex items-center gap-1">
+                          <Bell size={10} className="animate-bounce" />
+                          You won't be alerted when monitors go down
+                        </p>
+                        <p className="text-[10px] text-muted-foreground mb-2 leading-relaxed">
+                          Connect Slack, Discord, Email, or a Webhook to get real-time alerts.
+                        </p>
+                        <button
+                          onClick={() => {
+                            setShowNotifications(false);
+                            navigate('/dashboard/settings?tab=notifications');
+                          }}
+                          className="w-full text-[11px] font-bold bg-amber-500 text-white py-1.5 rounded-lg hover:bg-amber-600 transition-colors"
+                        >
+                          Set Up Notifications →
+                        </button>
+                      </div>
+                    )}
                   </motion.div>
                 </>
               )}
             </AnimatePresence>
           </div>
 
+          {/* ── Profile Dropdown ─────────────────────────────────── */}
           <div className="relative">
             <button 
               onClick={() => setShowDropdown(!showDropdown)}
@@ -200,6 +281,18 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                       >
                         <Settings size={14} /> Settings
                       </Link>
+                      {/* Notification shortcut - only visible when no channels */}
+                      {!hasActiveChannel && (
+                        <button
+                          onClick={() => {
+                            setShowDropdown(false);
+                            navigate('/dashboard/settings?tab=notifications');
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-amber-500/10 text-amber-600 dark:text-amber-400 transition-colors flex items-center gap-2"
+                        >
+                          <Bell size={14} className="animate-bounce" /> Enable Notifications
+                        </button>
+                      )}
                     </div>
                     <div className="border-t py-1">
                       <button 

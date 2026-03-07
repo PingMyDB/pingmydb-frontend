@@ -15,7 +15,9 @@ COPY . .
 
 # Build the application
 ARG VITE_API_URL=https://pingmydb-backend-xozimayiwa-uc.a.run.app
+ARG VITE_RAZORPAY_KEY_ID=rzp_test_SGARUU9kB6bEWB
 ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_RAZORPAY_KEY_ID=$VITE_RAZORPAY_KEY_ID
 RUN npm run build
 
 # Production stage

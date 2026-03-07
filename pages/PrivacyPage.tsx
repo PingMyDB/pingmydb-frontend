@@ -114,7 +114,7 @@ const PrivacyPage: React.FC = () => {
             </p>
             <div className="h-px w-12 bg-emerald-500/20 mx-auto mb-4" />
             <p className="text-xs text-muted-foreground">
-              Questions? Reach out to <a href="mailto:privacy@pingmydb.com" className="text-emerald-600 font-bold hover:underline">privacy@pingmydb.com</a>
+              Questions? Reach out to <a href="mailto:privacy@pingmydb.app" className="text-emerald-600 font-bold hover:underline">privacy@pingmydb.app</a>
             </p>
           </div>
         </motion.div>

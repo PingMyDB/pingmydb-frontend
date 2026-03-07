@@ -106,8 +106,8 @@ const TermsPage: React.FC = () => {
                         <p className="text-sm text-muted-foreground font-medium mb-4">
                             Have questions about our terms?
                         </p>
-                        <a href="mailto:legal@pingmydb.com" className="text-primary font-bold hover:underline">
-                            legal@pingmydb.com
+                        <a href="mailto:legal@pingmydb.app" className="text-primary font-bold hover:underline">
+                            legal@pingmydb.app
                         </a>
                     </div>
                 </motion.div>

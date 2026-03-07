@@ -242,7 +242,7 @@ const DocsPage: React.FC = () => {
               <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
                 Can't find an answer? Chat with our infra team.
               </p>
-              <a href="mailto:support@pingmydb.com" className="text-[11px] font-bold text-primary hover:underline transition-all">
+              <a href="mailto:support@pingmydb.app" className="text-[11px] font-bold text-primary hover:underline transition-all">
                 Email Engineering →
               </a>
             </div>

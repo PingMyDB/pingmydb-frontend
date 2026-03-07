@@ -3,11 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { 
   Search, UserCog, Trash2, ShieldCheck, Mail, Calendar, 
   Ban, Flag, StickyNote, ChevronDown, ChevronUp, Database,
-  ArrowRight, Activity
+  ArrowRight, Activity, ShieldOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { API_BASE_URL } from '../src/config';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 interface UserItem {
   id: number;
@@ -28,6 +29,8 @@ const AdminUsers: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [banModal, setBanModal] = useState<{ user: UserItem; action: 'ban' | 'unban' } | null>(null);
+  const [isActioning, setIsActioning] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -92,6 +95,14 @@ const AdminUsers: React.FC = () => {
     } catch (err) {
       toast.error('Failed to update user');
     }
+  };
+
+  const handleBanConfirm = async () => {
+    if (!banModal) return;
+    setIsActioning(true);
+    await handleUpdateStatus(banModal.user.id, { is_disabled: banModal.action === 'ban' });
+    setIsActioning(false);
+    setBanModal(null);
   };
 
   const handleUpdatePlan = async (id: number, newPlan: string) => {
@@ -231,13 +242,23 @@ const AdminUsers: React.FC = () => {
                             >
                                 <Flag size={16} />
                             </button>
-                            <button 
-                                onClick={() => handleUpdateStatus(user.id, { is_disabled: !user.is_disabled })}
-                                className={`p-2 rounded-lg transition-colors ${user.is_disabled ? 'text-destructive bg-destructive/10' : 'text-muted-foreground hover:bg-muted'}`}
-                                title={user.is_disabled ? "Unban User" : "Ban User"}
-                            >
-                                <Ban size={16} />
-                            </button>
+                            {user.is_disabled ? (
+                                <button 
+                                    onClick={() => setBanModal({ user, action: 'unban' })}
+                                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 transition-colors border border-emerald-500/20"
+                                    title="Unban this user"
+                                >
+                                    <ShieldOff size={13} /> Unban
+                                </button>
+                            ) : (
+                                <button 
+                                    onClick={() => setBanModal({ user, action: 'ban' })}
+                                    className="p-2 rounded-lg transition-colors text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                                    title="Ban User"
+                                >
+                                    <Ban size={16} />
+                                </button>
+                            )}
                             <button className="p-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
                             <Trash2 size={16} />
                             </button>
@@ -297,6 +318,23 @@ const AdminUsers: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Ban / Unban Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={!!banModal}
+        onClose={() => setBanModal(null)}
+        onConfirm={handleBanConfirm}
+        isLoading={isActioning}
+        variant={banModal?.action === 'ban' ? 'danger' : 'info'}
+        title={banModal?.action === 'ban' ? `Ban ${banModal?.user.name}?` : `Unban ${banModal?.user.name}?`}
+        message={
+          banModal?.action === 'ban'
+            ? `This will immediately disable ${banModal?.user.name}'s account (${banModal?.user.email}). They won't be able to log in or access any data until unbanned.`
+            : `This will restore full access to ${banModal?.user.name}'s account (${banModal?.user.email}). They will be able to log in immediately.`
+        }
+        confirmText={banModal?.action === 'ban' ? 'Yes, Ban User' : 'Yes, Unban User'}
+        cancelText="Cancel"
+      />
     </div>
   );
 };

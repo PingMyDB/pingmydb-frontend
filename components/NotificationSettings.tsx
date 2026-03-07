@@ -187,28 +187,44 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({ channels, o
                   />
                   
                   {formData.type === 'discord' && (
-                    <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/10 space-y-2">
-                        <p className="text-[11px] font-bold text-primary flex items-center gap-2">
-                            <ExternalLink size={12} /> How to get Discord Webhook:
+                    <div className="mt-4 p-4 rounded-xl bg-[#5865F2]/5 border border-[#5865F2]/20 space-y-3">
+                        <p className="text-[11px] font-bold text-[#5865F2] dark:text-[#7289da] flex items-center gap-2">
+                            <ExternalLink size={12} /> Discord Webhook
                         </p>
                         <ol className="text-[10px] text-muted-foreground list-decimal pl-4 space-y-1">
-                            <li>Open Discord Channel Settings (⚙️ icon)</li>
+                            <li>Open your Discord server → channel settings (⚙️)</li>
                             <li>Go to <strong>Integrations</strong> &gt; <strong>Webhooks</strong></li>
-                            <li>Click <strong>New Webhook</strong> &gt; Copy URL</li>
+                            <li>Click <strong>New Webhook</strong>, copy the URL</li>
                         </ol>
+                        <a
+                          href="https://discord.com/channels/@me"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 w-full text-[11px] font-bold text-white bg-[#5865F2] hover:bg-[#4752c4] py-2 rounded-lg transition-colors"
+                        >
+                          <ExternalLink size={12} /> Open Discord
+                        </a>
                     </div>
                   )}
 
                   {formData.type === 'slack' && (
-                    <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/10 space-y-2">
-                        <p className="text-[11px] font-bold text-primary flex items-center gap-2">
-                            <ExternalLink size={12} /> How to get Slack Webhook:
+                    <div className="mt-4 p-4 rounded-xl bg-[#4A154B]/5 border border-[#4A154B]/20 dark:border-[#E01E5A]/20 space-y-3">
+                        <p className="text-[11px] font-bold text-[#4A154B] dark:text-[#E01E5A] flex items-center gap-2">
+                            <ExternalLink size={12} /> Slack Webhook
                         </p>
                         <ol className="text-[10px] text-muted-foreground list-decimal pl-4 space-y-1">
-                            <li>Install <strong>Incoming WebHooks</strong> from Slack App Directory</li>
-                            <li>Select a channel and click <strong>Add Integration</strong></li>
-                            <li>Copy the <strong>Webhook URL</strong> from the setup page</li>
+                            <li>Create a Slack App and enable <strong>Incoming Webhooks</strong></li>
+                            <li>Select a channel and click <strong>Add New Webhook</strong></li>
+                            <li>Copy the <strong>Webhook URL</strong></li>
                         </ol>
+                        <a
+                          href="https://api.slack.com/apps/new"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 w-full text-[11px] font-bold text-white bg-[#4A154B] hover:bg-[#611f69] py-2 rounded-lg transition-colors"
+                        >
+                          <ExternalLink size={12} /> Create Slack App
+                        </a>
                     </div>
                   )}
 
@@ -217,6 +233,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({ channels, o
                       We'll send alert notifications to this email address.
                     </p>
                   )}
+
                 </div>
 
                 <div className="flex gap-4 pt-4">
