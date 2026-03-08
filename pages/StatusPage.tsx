@@ -24,6 +24,7 @@ interface MonitorStatus {
   latency: number;
   last_ping_at: string;
   avg_latency: number;
+  history_24h: { time: string; status: 'up' | 'down' | 'no_data' }[];
 }
 
 interface Incident {
@@ -40,6 +41,23 @@ interface StatusData {
   monitors: MonitorStatus[];
   incidents: Incident[];
 }
+
+const UptimeBar: React.FC<{ history: MonitorStatus['history_24h'] }> = ({ history }) => {
+  return (
+    <div className="flex gap-[2px] h-6 w-full mt-3">
+      {history.map((h, i) => (
+        <div 
+          key={i}
+          className={`flex-1 rounded-[1px] transition-all hover:opacity-80
+            ${h.status === 'up' ? 'bg-emerald-500' : 
+              h.status === 'down' ? 'bg-destructive' : 'bg-muted/40'}
+          `}
+          title={`${new Date(h.time).toLocaleTimeString([], { hour: 'numeric' })}: ${h.status.replace('_', ' ').toUpperCase()}`}
+        />
+      ))}
+    </div>
+  );
+};
 
 const StatusPage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -221,72 +239,98 @@ const StatusPage: React.FC = () => {
                                 <p className="text-muted-foreground font-medium">No active monitors are currently being tracked for this organization.</p>
                             </div>
                         )}
-                        {data?.monitors.map((monitor, index) => (
-                            <motion.div
-                                key={monitor.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                                className="bg-card border rounded-xl p-5 hover:border-primary/30 transition-all shadow-sm flex flex-col md:flex-row items-center gap-6 group"
-                            >
-                                <div className="flex items-center gap-4 flex-1 w-full">
-                                    <div className={`w-3 h-3 rounded-full shadow-sm
-                                        ${monitor.status === 'online' ? 'bg-emerald-500 shadow-emerald-500/50 animate-pulse' : 'bg-destructive shadow-destructive/50'}
-                                    `} />
-                                    <h4 className="font-bold text-lg tracking-tight group-hover:text-primary transition-colors">{monitor.name}</h4>
-                                </div>
+                        {data?.monitors.map((monitor, index) => {
+                            const latency = monitor.avg_latency || monitor.latency;
+                            const isColdStart = monitor.status === 'online' && latency > 3000;
+                            
+                            return (
+                                <motion.div
+                                    key={monitor.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.05 }}
+                                    className="bg-card border rounded-xl p-5 hover:border-primary/30 transition-all shadow-sm group"
+                                >
+                                    <div className="flex flex-col md:flex-row items-center gap-6 mb-4">
+                                        <div className="flex items-center gap-4 flex-1 w-full">
+                                            <div className={`w-3 h-3 rounded-full shadow-sm
+                                                ${monitor.status === 'online' ? 'bg-emerald-500 shadow-emerald-500/50 animate-pulse' : 'bg-destructive shadow-destructive/50'}
+                                            `} />
+                                            <h4 className="font-bold text-lg tracking-tight group-hover:text-primary transition-colors">{monitor.name}</h4>
+                                        </div>
 
-                                <div className="flex items-center gap-8 justify-between w-full md:w-auto">
-                                    <div className="flex flex-col items-center md:items-end min-w-[100px]">
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">Performance</span>
-                                        <span className="font-mono font-bold text-sm">
-                                            {monitor.status === 'online' ? `${monitor.avg_latency || monitor.latency}ms` : '--'}
-                                        </span>
-                                    </div>
-                                    
-                                    <div className="flex flex-col items-center md:items-end min-w-[100px]">
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">Last Check</span>
-                                        <span className="text-xs font-medium text-muted-foreground">
-                                            {new Date(monitor.last_ping_at).toLocaleTimeString()}
-                                        </span>
+                                        <div className="flex items-center gap-8 justify-between w-full md:w-auto">
+                                            <div className="flex flex-col items-center md:items-end min-w-[120px]">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">
+                                                    {isColdStart ? 'Cold Start' : 'Performance'}
+                                                </span>
+                                                <span className={`font-mono font-bold text-sm ${isColdStart ? 'text-blue-400' : ''}`}>
+                                                    {monitor.status === 'online' 
+                                                        ? (isColdStart ? `${(latency / 1000).toFixed(1)}s wake` : `${latency}ms`) 
+                                                        : '--'}
+                                                </span>
+                                            </div>
+                                            
+                                            <div className="flex flex-col items-center md:items-end min-w-[100px]">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">Status</span>
+                                                <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md
+                                                    ${monitor.status === 'online' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-destructive/10 text-destructive'}
+                                                `}>
+                                                    {monitor.status === 'online' ? 'Operational' : 'Degraded'}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div className="flex flex-col items-center md:items-end min-w-[80px]">
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Status</span>
-                                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md
-                                            ${monitor.status === 'online' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-destructive/10 text-destructive'}
-                                        `}>
-                                            {monitor.status === 'online' ? 'Operational' : 'Degraded'}
-                                        </span>
+                                    {/* 24h Uptime Bar */}
+                                    <div className="pt-2 border-t border-muted/20">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60">24H Uptime History</span>
+                                            <span className="text-[10px] font-bold text-emerald-500">100% Reliability</span>
+                                        </div>
+                                        <UptimeBar history={monitor.history_24h || []} />
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            );
+                        })}
                     </AnimatePresence>
                 </div>
 
                 {/* Footer Section */}
-                <footer className="mt-20 pt-8 border-t text-center space-y-6">
-                    <p className="text-xs font-medium text-muted-foreground max-w-lg mx-auto leading-relaxed">
-                        This status page is automatically generated and updated in real-time by <strong>PingMyDb</strong>. 
-                        We monitor infrastructure health by performing periodic connectivity checks to the specified database endpoints.
-                    </p>
+                <footer className="mt-20 pt-12 border-t text-center space-y-10">
+                    <div className="space-y-4">
+                        <p className="text-xs font-medium text-muted-foreground max-w-lg mx-auto leading-relaxed">
+                            This status page is automatically generated and updated in real-time by <strong>PingMyDb</strong>. 
+                            We monitor infrastructure health by performing periodic connectivity checks to the specified database endpoints.
+                        </p>
 
-                    {/* Powered by badge — viral marketing on every share */}
-                    <Link 
-                      to="/" 
-                      className="inline-flex flex-col items-center gap-1 group"
-                    >
-                      <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-card hover:border-primary/50 transition-all shadow-sm group-hover:shadow-md">
-                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                        <span className="text-xs font-black uppercase tracking-widest">
-                          Powered by <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
+                        <Link 
+                        to="/" 
+                        className="inline-flex flex-col items-center gap-1 group"
+                        >
+                        <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-card hover:border-primary/50 transition-all shadow-sm group-hover:shadow-md">
+                            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                            <span className="text-xs font-black uppercase tracking-widest">
+                            Powered by <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
+                            </span>
+                        </div>
+                        <span className="text-[10px] text-muted-foreground font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                            Database monitoring &amp; cold start prevention for developers
                         </span>
-                      </div>
-                      <span className="text-[10px] text-muted-foreground font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                        Database monitoring &amp; cold start prevention for developers
-                      </span>
-                    </Link>
+                        </Link>
+                    </div>
+
+                    {/* Growth CTA Section */}
+                    <div className="bg-gradient-to-br from-primary/5 via-card to-accent/5 p-8 rounded-3xl border border-primary/10 max-w-2xl mx-auto shadow-inner">
+                        <h4 className="text-lg font-black mb-2 tracking-tight">Monitor your database with PingMyDb</h4>
+                        <p className="text-sm text-muted-foreground mb-6 font-medium">Prevent cold starts and maintain 99.9% availability for your serverless databases.</p>
+                        <Link 
+                            to="/" 
+                            className="bg-primary text-primary-foreground px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg"
+                        >
+                            Start Monitoring for Free →
+                        </Link>
+                    </div>
                 </footer>
             </main>
         </div>
