@@ -336,14 +336,6 @@ const DashboardPage: React.FC = () => {
         statusIcon: <div className="w-2 h-2 rounded-full bg-primary animate-pulse ml-2" />
       },
       { 
-        title: 'Uptime', 
-        value: workspaceMonitors.length ? `${uptimePct}%` : 'No data yet', 
-        subValue: workspaceMonitors.length ? 'Last 24 hours' : 'Add a monitor to start', 
-        icon: CheckCircle2, 
-        color: 'bg-emerald-500/10 text-emerald-500',
-        statusIcon: workspaceMonitors.length ? <span className="text-emerald-500 text-lg">✓</span> : undefined
-      },
-      { 
         title: 'Down', 
         value: offline, 
         subValue: 'Requires attention', 
