@@ -62,7 +62,7 @@ export interface User {
   avatarUrl?: string;
   apiKey: string;
   is_verified?: boolean;
-  plan: 'free' | 'student' | 'pro' | 'enterprise';
+  plan: 'free' | 'student' | 'pro' | 'team';
   role: 'user' | 'admin';
   student_status?: 'none' | 'pending' | 'verified';
   institution_name?: string;

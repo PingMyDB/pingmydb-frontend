@@ -468,8 +468,8 @@ const PricingPage: React.FC = () => {
       ctaText: 'Go Pro Now'
     },
     {
-      id: 'enterprise',
-      name: 'Enterprise',
+      id: 'team',
+      name: 'Team',
       price: '$9.99',
       priceValue: 9.99,
       originalPrice: '$19.99',
@@ -483,7 +483,7 @@ const PricingPage: React.FC = () => {
         'Priority 24/7 support',
         'Team collaboration',
       ],
-      ctaText: 'Get Enterprise'
+      ctaText: 'Get Team'
     }
   ];
 
@@ -630,8 +630,8 @@ const PricingPage: React.FC = () => {
         </motion.div>
       )}
 
-      {/* Launch Banner (Always shown if not on Enterprise plan) */}
-      {user?.plan !== 'enterprise' && (
+      {/* Launch Banner (Always shown if not on Team plan) */}
+      {user?.plan !== 'team' && (
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -780,7 +780,7 @@ const PricingPage: React.FC = () => {
                <Info size={40} />
             </div>
             <div className="flex-1 text-center md:text-left">
-               <h4 className="text-2xl font-black mb-3">Custom Enterprise Architecture?</h4>
+               <h4 className="text-2xl font-black mb-3">Custom Team Architecture?</h4>
                <p className="text-muted-foreground font-medium leading-relaxed">
                  For high-volume distribution or specialized regional monitoring clusters, 
                  our engineers can architect a bespoke solution tailored to your exact SLA requirements.

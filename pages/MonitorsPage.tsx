@@ -48,7 +48,7 @@ const PLAN_MIN_INTERVAL_MS: Record<string, number> = {
   free: 43200000,      // 12 hours
   student: 3600000,    // 1 hour
   pro: 3600000,        // 1 hour
-  enterprise: 300000,  // 5 min
+  team: 300000,  // 5 min
 };
 
 const MonitorsPage: React.FC = () => {

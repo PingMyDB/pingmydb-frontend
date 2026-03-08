@@ -391,9 +391,9 @@ const LandingPage: React.FC = () => {
               </button>
             </div>
 
-            {/* enterprise Preview */}
+            {/* team Preview */}
             <div className="min-w-[280px] md:min-w-0 snap-center p-8 rounded-2xl border border-border bg-card/50 flex flex-col items-center text-center shrink-0 md:shrink">
-              <h3 className="font-bold text-lg mb-2">Enterprise</h3>
+              <h3 className="font-bold text-lg mb-2">Team</h3>
               <div className="flex flex-col items-center mb-6">
                 <span className="text-sm text-muted-foreground line-through font-bold mb-1">$19.99</span>
                 <div className="flex items-baseline gap-1">

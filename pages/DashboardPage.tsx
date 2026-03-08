@@ -87,7 +87,7 @@ const PLAN_RANGES: Record<string, { label: string; hours: number }[]> = {
   free:       [{ label: '24h', hours: 24 }],
   student:    [{ label: '24h', hours: 24 }, { label: '3d', hours: 72 }],
   pro:        [{ label: '24h', hours: 24 }, { label: '7d', hours: 168 }, { label: '15d', hours: 360 }],
-  enterprise: [{ label: '24h', hours: 24 }, { label: '7d', hours: 168 }, { label: '30d', hours: 720 }],
+  team: [{ label: '24h', hours: 24 }, { label: '7d', hours: 168 }, { label: '30d', hours: 720 }],
 };
 
 const UptimeChart: React.FC<{ activeWorkspace: number | null, activeMonitorId: number | null, plan: string }> = ({ activeWorkspace, activeMonitorId, plan }) => {

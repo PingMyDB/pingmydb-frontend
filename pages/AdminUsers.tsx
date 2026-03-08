@@ -207,7 +207,7 @@ const AdminUsers: React.FC = () => {
                             <option value="free">Free</option>
                             <option value="student">Student</option>
                             <option value="pro">Pro</option>
-                            <option value="enterprise">Enterprise</option>
+                            <option value="team">Team</option>
                         </select>
                         <div className="flex gap-2">
                             {user.is_disabled && <span className="text-[10px] font-black uppercase text-destructive tracking-tighter">Banned</span>}
