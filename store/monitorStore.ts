@@ -39,6 +39,7 @@ interface MonitorStore {
   allAlerts: Alert[];
   fetchAllAlerts: () => Promise<void>;
   fetchStatsHistory: (owner_id?: number, monitor_id?: number, hours?: number) => Promise<{ hour: string; uptime_pct: number; avg_latency: number }[]>;
+  fetchColdStarts: (owner_id?: number, monitor_id?: number) => Promise<{ cold_start_count: number; avg_cold_start_ms: number; max_cold_start_ms: number }>;
   testQuery: (data: any) => Promise<any>;
 }
 
@@ -163,6 +164,18 @@ export const useMonitorStore = create<MonitorStore>((set) => ({
     
     const res = await fetch(url, { headers: headers() });
     if (!res.ok) throw new Error('Failed to fetch stats history');
+    return res.json();
+  },
+
+  fetchColdStarts: async (owner_id?: number, monitor_id?: number) => {
+    let url = `${API_BASE}/stats/cold-starts`;
+    const params = new URLSearchParams();
+    if (owner_id) params.append('owner_id', owner_id.toString());
+    if (monitor_id) params.append('monitor_id', monitor_id.toString());
+    const queryString = params.toString();
+    if (queryString) url += `?${queryString}`;
+    const res = await fetch(url, { headers: headers() });
+    if (!res.ok) throw new Error('Failed to fetch cold starts');
     return res.json();
   },
 

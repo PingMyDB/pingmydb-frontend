@@ -257,11 +257,12 @@ const UptimeChart: React.FC<{ activeWorkspace: number | null, activeMonitorId: n
 };
 
 const DashboardPage: React.FC = () => {
-  const { monitors, fetchMonitors } = useMonitorStore();
+  const { monitors, fetchMonitors, fetchColdStarts } = useMonitorStore();
   const { user } = useAuth();
   const [joinedTeams, setJoinedTeams] = React.useState<any[]>([]);
-  const [activeWorkspace, setActiveWorkspace] = React.useState<number | null>(null); // null = user's own workspace
+  const [activeWorkspace, setActiveWorkspace] = React.useState<number | null>(null);
   const [activeMonitorId, setActiveMonitorId] = React.useState<number | null>(null);
+  const [coldStartData, setColdStartData] = React.useState<{ cold_start_count: number; avg_cold_start_ms: number; max_cold_start_ms: number } | null>(null);
 
   useEffect(() => {
     fetchMonitors();
@@ -281,6 +282,21 @@ const DashboardPage: React.FC = () => {
     const timer = setInterval(fetchMonitors, 15000);
     return () => clearInterval(timer);
   }, [fetchMonitors]);
+
+  // Fetch cold start data
+  useEffect(() => {
+    const loadColdStarts = async () => {
+      try {
+        const data = await fetchColdStarts(activeWorkspace || undefined);
+        setColdStartData(data);
+      } catch (e) {
+        console.error('Failed to fetch cold starts:', e);
+      }
+    };
+    loadColdStarts();
+    const timer = setInterval(loadColdStarts, 60000);
+    return () => clearInterval(timer);
+  }, [fetchColdStarts, activeWorkspace]);
 
   // Filter monitors based on active workspace
   const workspaceMonitors = useMemo(() => {
@@ -312,7 +328,9 @@ const DashboardPage: React.FC = () => {
       { 
         title: 'Active Monitors', 
         value: online, 
-        subValue: `out of ${workspaceMonitors.length} total`, 
+        subValue: workspaceMonitors.length === 0
+          ? 'No databases added yet'
+          : `${workspaceMonitors.length} database${workspaceMonitors.length !== 1 ? 's' : ''} monitored`, 
         icon: Database, 
         color: 'bg-primary/10 text-primary',
         statusIcon: <div className="w-2 h-2 rounded-full bg-primary animate-pulse ml-2" />
@@ -335,11 +353,35 @@ const DashboardPage: React.FC = () => {
       },
       { 
         title: 'Avg Latency', 
-        value: workspaceMonitors.length ? `${avgLatency}ms` : 'No data yet', 
-        subValue: workspaceMonitors.length ? `Last ping: ${lastLatency}ms` : 'Add a monitor to start', 
+        value: workspaceMonitors.length
+          ? (avgLatency > 3000 ? '❄️ Cold start' : `${avgLatency}ms`)
+          : 'No data yet', 
+        subValue: workspaceMonitors.length
+          ? (avgLatency > 3000
+              ? `${(avgLatency / 1000).toFixed(1)}s wake time detected`
+              : `Last ping: ${lastLatency}ms`)
+          : 'Add a monitor to start', 
         icon: Zap, 
-        color: 'bg-amber-500/10 text-amber-500',
-        statusIcon: workspaceMonitors.length ? <span className="text-amber-500 text-lg">⚡</span> : undefined
+        color: avgLatency > 3000 ? 'bg-blue-500/10 text-blue-400' : 'bg-amber-500/10 text-amber-500',
+        statusIcon: workspaceMonitors.length
+          ? (avgLatency > 3000
+              ? <span className="text-blue-400 text-base">❄️</span>
+              : <span className="text-amber-500 text-lg">⚡</span>)
+          : undefined
+      },
+      {
+        title: 'Cold Starts Today',
+        value: coldStartData ? coldStartData.cold_start_count : '—',
+        subValue: coldStartData && coldStartData.cold_start_count > 0
+          ? `Avg wake: ${(coldStartData.avg_cold_start_ms / 1000).toFixed(1)}s`
+          : 'No cold starts detected',
+        icon: Clock,
+        color: coldStartData && coldStartData.cold_start_count > 0
+          ? 'bg-blue-500/10 text-blue-400'
+          : 'bg-muted/30 text-muted-foreground',
+        statusIcon: coldStartData && coldStartData.cold_start_count > 0
+          ? <span className="text-blue-400 text-base">❄️</span>
+          : <span className="text-muted-foreground text-base">✓</span>
       },
     ];
   }, [workspaceMonitors]);

@@ -266,21 +266,27 @@ const StatusPage: React.FC = () => {
                 </div>
 
                 {/* Footer Section */}
-                <footer className="mt-20 pt-8 border-t text-center space-y-4">
+                <footer className="mt-20 pt-8 border-t text-center space-y-6">
                     <p className="text-xs font-medium text-muted-foreground max-w-lg mx-auto leading-relaxed">
-                        About this page: This status page is automatically generated and updated in real-time by <strong>PingMyDb</strong>. 
+                        This status page is automatically generated and updated in real-time by <strong>PingMyDb</strong>. 
                         We monitor infrastructure health by performing periodic connectivity checks to the specified database endpoints.
                     </p>
-                    <div className="flex items-center justify-center gap-6 pt-4">
-                        <Link to="/" className="text-xs font-black uppercase tracking-widest hover:opacity-80 transition-opacity">
-                            Created with <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
-                        </Link>
-                        <span className="w-1 h-1 bg-muted-foreground/30 rounded-full" />
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-bold">
-                            <Clock size={12} />
-                            Uptime 99.9% (30 Days)
-                        </div>
-                    </div>
+
+                    {/* Powered by badge — viral marketing on every share */}
+                    <Link 
+                      to="/" 
+                      className="inline-flex flex-col items-center gap-1 group"
+                    >
+                      <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border bg-card hover:border-primary/50 transition-all shadow-sm group-hover:shadow-md">
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        <span className="text-xs font-black uppercase tracking-widest">
+                          Powered by <span className="text-primary">Ping</span><span className="text-foreground">MyDb</span>
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-muted-foreground font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                        Database monitoring &amp; cold start prevention for developers
+                      </span>
+                    </Link>
                 </footer>
             </main>
         </div>
