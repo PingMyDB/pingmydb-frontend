@@ -225,10 +225,40 @@ const PricingPage: React.FC = () => {
   };
 
   const [showAllPlans, setShowAllPlans] = React.useState(!user);
+  const [isProcessing, setIsProcessing] = React.useState<string | null>(null);
+  const [isCancelling, setIsCancelling] = React.useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = React.useState(false);
 
-   const [isProcessing, setIsProcessing] = React.useState<string | null>(null);
-   const [isCancelling, setIsCancelling] = React.useState(false);
-   const [isCancelModalOpen, setIsCancelModalOpen] = React.useState(false);
+  // Promo code state
+  const [promoInput, setPromoInput] = React.useState('');
+  const [promoStatus, setPromoStatus] = React.useState<null | { valid: boolean; discountedAmount?: number; billingDays?: number; description?: string; error?: string }>(null);
+  const [isValidatingPromo, setIsValidatingPromo] = React.useState(false);
+  const [showPromoInput, setShowPromoInput] = React.useState<string | null>(null); // planId that has promo open
+
+  const handleValidatePromo = async (planId: string) => {
+    if (!promoInput.trim()) return;
+    const token = localStorage.getItem('pmdb_token');
+    setIsValidatingPromo(true);
+    setPromoStatus(null);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/payments/validate-promo`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'token': token || '' },
+        body: JSON.stringify({ promoCode: promoInput.trim(), planId })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPromoStatus({ valid: true, ...data });
+        toast.success('Promo applied! 🎉');
+      } else {
+        setPromoStatus({ valid: false, error: data.message });
+      }
+    } catch {
+      setPromoStatus({ valid: false, error: 'Failed to validate promo code' });
+    } finally {
+      setIsValidatingPromo(false);
+    }
+  };
 
    const handleCancelSubscription = async () => {
     setIsCancelling(true);
@@ -283,6 +313,14 @@ const PricingPage: React.FC = () => {
 
     try {
         setIsProcessing(planId);
+
+        // Use promo-discounted amount if valid promo is applied for this plan
+        const effectiveAmount = (promoStatus?.valid && showPromoInput === planId)
+          ? promoStatus.discountedAmount!
+          : amount;
+        const promoCode = (promoStatus?.valid && showPromoInput === planId)
+          ? promoInput.trim()
+          : undefined;
         
         // 1. Create Order
         const orderRes = await fetch(`${API_BASE_URL}/api/payments/create-order`, {
@@ -292,11 +330,13 @@ const PricingPage: React.FC = () => {
                 'token': token || ''
             },
             body: JSON.stringify({
-                amount: amount, 
+                amount: effectiveAmount,
                 currency: 'USD',
-                planId: planId
+                planId,
+                promoCode
             })
         });
+
 
         const orderData = await orderRes.json();
 
@@ -661,8 +701,9 @@ const PricingPage: React.FC = () => {
             }
 
             return (
+              <React.Fragment key={plan.id}>
+              <div>
               <PricingCard 
-                key={plan.id}
                 index={idx}
                 name={plan.name}
                 price={plan.price}
@@ -676,6 +717,52 @@ const PricingPage: React.FC = () => {
                 usageText={usageText}
                 onClick={user && isCurrentPlan ? undefined : () => handleUpgrade(plan.id, plan.priceValue)}
               />
+              {/* Promo code — only for paid plans the user can upgrade to */}
+              {user && !isCurrentPlan && plan.priceValue > 0 && (
+                <div className="mt-3 px-1">
+                  {promoStatus?.valid && showPromoInput === plan.id ? (
+                    <div className="flex items-center gap-2 text-xs text-emerald-500 font-semibold bg-emerald-500/10 rounded-lg px-3 py-2 border border-emerald-500/20">
+                      <span>🎉</span>
+                      <span>{promoStatus.description}</span>
+                      <button
+                        onClick={() => { setPromoStatus(null); setPromoInput(''); setShowPromoInput(null); }}
+                        className="ml-auto text-muted-foreground hover:text-foreground text-[10px]"
+                      >Remove</button>
+                    </div>
+                  ) : showPromoInput === plan.id ? (
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={promoInput}
+                        onChange={e => { setPromoInput(e.target.value.toUpperCase()); setPromoStatus(null); }}
+                        onKeyDown={e => e.key === 'Enter' && handleValidatePromo(plan.id)}
+                        placeholder="Enter promo code"
+                        className="flex-1 text-xs px-3 py-2 rounded-lg border bg-background focus:outline-none focus:ring-1 focus:ring-primary uppercase tracking-widest"
+                        autoFocus
+                      />
+                      <button
+                        onClick={() => handleValidatePromo(plan.id)}
+                        disabled={isValidatingPromo || !promoInput.trim()}
+                        className="text-xs px-3 py-2 rounded-lg bg-primary text-primary-foreground font-bold disabled:opacity-50"
+                      >{isValidatingPromo ? '...' : 'Apply'}</button>
+                      <button
+                        onClick={() => { setShowPromoInput(null); setPromoInput(''); setPromoStatus(null); }}
+                        className="text-xs px-2 py-2 rounded-lg border text-muted-foreground"
+                      >✕</button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => { setShowPromoInput(plan.id); setPromoStatus(null); setPromoInput(''); }}
+                      className="text-[11px] text-muted-foreground hover:text-primary transition-colors underline-offset-2 hover:underline"
+                    >Have a promo code?</button>
+                  )}
+                  {promoStatus && !promoStatus.valid && showPromoInput === plan.id && (
+                    <p className="text-[11px] text-destructive mt-1">{promoStatus.error}</p>
+                  )}
+                </div>
+              )}
+              </div>
+              </React.Fragment>
             );
           })}
         </div>
