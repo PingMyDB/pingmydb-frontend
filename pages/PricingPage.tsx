@@ -411,9 +411,9 @@ const PricingPage: React.FC = () => {
     {
       id: 'pro',
       name: 'Pro',
-      price: '$3.99',
-      priceValue: 3.99,
-      originalPrice: '$7.99',
+      price: '$1',
+      priceValue: 1,
+      originalPrice: '$3.99',
       limit: 20,
       description: 'Production-grade reliability for developers.',
       isPopular: true,
