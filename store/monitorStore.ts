@@ -38,7 +38,7 @@ interface MonitorStore {
   fetchAlerts: (id: number) => Promise<Alert[]>;
   allAlerts: Alert[];
   fetchAllAlerts: () => Promise<void>;
-  fetchStatsHistory: (owner_id?: number, monitor_id?: number) => Promise<{ hour: string; uptime_pct: number; avg_latency: number }[]>;
+  fetchStatsHistory: (owner_id?: number, monitor_id?: number, hours?: number) => Promise<{ hour: string; uptime_pct: number; avg_latency: number }[]>;
   testQuery: (data: any) => Promise<any>;
 }
 
@@ -151,11 +151,12 @@ export const useMonitorStore = create<MonitorStore>((set) => ({
     }
   },
 
-  fetchStatsHistory: async (owner_id?: number, monitor_id?: number) => {
+  fetchStatsHistory: async (owner_id?: number, monitor_id?: number, hours?: number) => {
     let url = `${API_BASE}/stats/history`;
     const params = new URLSearchParams();
     if (owner_id) params.append('owner_id', owner_id.toString());
     if (monitor_id) params.append('monitor_id', monitor_id.toString());
+    if (hours) params.append('hours', hours.toString());
     
     const queryString = params.toString();
     if (queryString) url += `?${queryString}`;

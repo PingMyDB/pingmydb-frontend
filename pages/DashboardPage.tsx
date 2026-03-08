@@ -82,28 +82,47 @@ const StatCard: React.FC<{
   </motion.div>
 );
 
-const UptimeChart: React.FC<{ activeWorkspace: number | null, activeMonitorId: number | null }> = ({ activeWorkspace, activeMonitorId }) => {
+// Plan-based available chart ranges
+const PLAN_RANGES: Record<string, { label: string; hours: number }[]> = {
+  free:       [{ label: '24h', hours: 24 }],
+  student:    [{ label: '24h', hours: 24 }, { label: '3d', hours: 72 }],
+  pro:        [{ label: '24h', hours: 24 }, { label: '7d', hours: 168 }, { label: '15d', hours: 360 }],
+  enterprise: [{ label: '24h', hours: 24 }, { label: '7d', hours: 168 }, { label: '30d', hours: 720 }],
+};
+
+const UptimeChart: React.FC<{ activeWorkspace: number | null, activeMonitorId: number | null, plan: string }> = ({ activeWorkspace, activeMonitorId, plan }) => {
   const { fetchStatsHistory } = useMonitorStore();
   const [history, setHistory] = React.useState<{ hour: string; uptime_pct: number; avg_latency: number }[]>([]);
   const [view, setView] = React.useState<'uptime' | 'latency'>('uptime');
+  const availableRanges = PLAN_RANGES[plan] || PLAN_RANGES.free;
+  const [selectedRange, setSelectedRange] = React.useState(availableRanges[0]);
+
+  useEffect(() => {
+    // Reset to first range if plan changes
+    setSelectedRange(availableRanges[0]);
+  }, [plan]);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchStatsHistory(activeWorkspace || undefined, activeMonitorId || undefined);
+        const data = await fetchStatsHistory(activeWorkspace || undefined, activeMonitorId || undefined, selectedRange.hours);
         setHistory(data);
       } catch (err) {
         console.error('Failed to load chart data:', err);
       }
     };
     loadData();
-    const timer = setInterval(loadData, 60000); // Update every minute
+    const timer = setInterval(loadData, 60000);
     return () => clearInterval(timer);
-  }, [fetchStatsHistory, activeWorkspace, activeMonitorId]);
+  }, [fetchStatsHistory, activeWorkspace, activeMonitorId, selectedRange]);
 
   const chartLabels = history.map(h => {
     const d = new Date(h.hour);
-    return d.getHours().toString().padStart(2, '0') + ':00';
+    // For ranges <= 48h show hour ticks, otherwise show date
+    if (selectedRange.hours <= 48) {
+      return d.getHours().toString().padStart(2, '0') + ':00';
+    }
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   });
 
   const uptimeData = history.map(h => h.uptime_pct);
@@ -209,12 +228,17 @@ const UptimeChart: React.FC<{ activeWorkspace: number | null, activeMonitorId: n
           </button>
         </div>
         <div className="flex gap-1 bg-accent/30 p-1 rounded-lg">
-          {['24h', '7d', '30d'].map((range) => (
+          {availableRanges.map((range) => (
              <button 
-              key={range}
-              className={`px-2 py-1 rounded text-[9px] font-bold uppercase transition-all ${range === '24h' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:bg-background/30'}`}
+              key={range.label}
+              onClick={() => setSelectedRange(range)}
+              className={`px-2 py-1 rounded text-[9px] font-bold uppercase transition-all ${
+                selectedRange.label === range.label
+                  ? 'bg-background shadow-sm text-foreground'
+                  : 'text-muted-foreground hover:bg-background/30'
+              }`}
              >
-               {range}
+               {range.label}
              </button>
           ))}
         </div>
@@ -448,7 +472,7 @@ const DashboardPage: React.FC = () => {
               <TrendingUp size={14} className="text-green-500" /> Live
             </div>
           </div>
-          <UptimeChart activeWorkspace={activeWorkspace} activeMonitorId={activeMonitorId} />
+          <UptimeChart activeWorkspace={activeWorkspace} activeMonitorId={activeMonitorId} plan={user?.plan || 'free'} />
         </div>
 
         {/* Active Monitors */}
