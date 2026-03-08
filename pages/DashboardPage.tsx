@@ -319,11 +319,11 @@ const DashboardPage: React.FC = () => {
       },
       { 
         title: 'Uptime', 
-        value: `${uptimePct}%`, 
-        subValue: 'Last 24 hours', 
+        value: workspaceMonitors.length ? `${uptimePct}%` : 'No data yet', 
+        subValue: workspaceMonitors.length ? 'Last 24 hours' : 'Add a monitor to start', 
         icon: CheckCircle2, 
         color: 'bg-emerald-500/10 text-emerald-500',
-        statusIcon: <span className="text-emerald-500 text-lg">✓</span>
+        statusIcon: workspaceMonitors.length ? <span className="text-emerald-500 text-lg">✓</span> : undefined
       },
       { 
         title: 'Down', 
@@ -335,11 +335,11 @@ const DashboardPage: React.FC = () => {
       },
       { 
         title: 'Avg Latency', 
-        value: `${avgLatency}ms`, 
-        subValue: `Last ping: ${lastLatency}ms`, 
+        value: workspaceMonitors.length ? `${avgLatency}ms` : 'No data yet', 
+        subValue: workspaceMonitors.length ? `Last ping: ${lastLatency}ms` : 'Add a monitor to start', 
         icon: Zap, 
         color: 'bg-amber-500/10 text-amber-500',
-        statusIcon: <span className="text-amber-500 text-lg">⚡</span>
+        statusIcon: workspaceMonitors.length ? <span className="text-amber-500 text-lg">⚡</span> : undefined
       },
     ];
   }, [workspaceMonitors]);
